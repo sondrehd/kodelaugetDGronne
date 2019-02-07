@@ -1,0 +1,17 @@
+{
+  "name": "cityq",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cityq.js",
+  "scripts": {
+    "start": "sudo node cityq.js",
+    "stop": "sudo pkill -f cityq.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "mongodb": "^3.1.4",
+    "socket.io": "^2.1.1"
+  }
+}

@@ -1,0 +1,49 @@
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
+const express = require('express');
+const app = express();
+const bodyParser = require("body-parser");
+// const dbHelper = require('./db-helper');
+
+// Certificate
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/hawkon.eu/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/hawkon.eu/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/hawkon.eu/chain.pem', 'utf8');
+
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
+};
+
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
+const httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(443, () => {
+	console.log('HTTPS Server running on port 443');
+});
+
+app.get('/', function(req, res){
+  res.send("Hello green world");
+});
+
+app.post('/googleHome', function(req, res){
+  // if (accessController.isAuthorized(req.body.originalRequest.data.user.userId)) {
+  //   intentToActionMapper.mapIntentToAction(req.body.result.metadata.intentName, req.body.result.parameters, socket);
+  //   var response = JSON.stringify(req.body.result.fulfillment.speech);
+  //   res.send(JSON.stringify({ "speech": response, "displayText": req.body.result.metadata.intentName }));
+  // }
+  // else {
+  //   res.send(JSON.stringify({ "speech": "You are not Hakon. Get out!", "displayText": "Failed to call server"}));
+  // }
+  res.send(JSON.stringify({ "speech": "You are not Hakon. Get out!", "displayText": "Failed to call server"}));
+});
+
+
+app.get('/sensorData', function(req, res){
+  console.log("/sensorData");
+});
