@@ -33,7 +33,7 @@ class Main extends Component<Props> {
       >
         <View style={styles.container}>
           <Text>
-              hei
+              Main
           </Text>
         </View>
       </SafeAreaView>
