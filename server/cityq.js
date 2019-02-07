@@ -5,7 +5,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
 const { WebhookClient } = require('dialogflow-fulfillment');
-// const dbHelper = require('./db-helper');
+const dbHelper = require('./db-helper');
 
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/hawkon.eu/privkey.pem', 'utf8');
@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 const httpsServer = https.createServer(credentials, app);
 
 httpsServer.listen(443, () => {
-	console.log('HTTPS Server running on port 443');
+	console.log('HTTPS Server running on port 444');
 });
 
 app.get('/', function(req, res){
@@ -66,6 +66,15 @@ app.post('/googleHome', function(request, response){
 });
 
 
-app.get('/sensorData', function(req, res){
-  console.log("/sensorData");
+app.get('/getValue', function(req, res){
+  console.log("/getValue");
+  dbHelper.getValues((rows) => {
+    res.send(rows);
+  });
+});
+
+app.post('/setValue', function(req, res){
+  console.log("/setValue");
+  dbHelper.setValue("hei");
+  res.send("done");
 });
