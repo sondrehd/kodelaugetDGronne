@@ -14,16 +14,18 @@ import colors from '../style/colors';
 
 function mapStateToProps(state) {
   return {
-    
   };
 }
 
 type Props = {
-  
+  navigation: Object
 };
 
 class Login extends Component<Props> {
-  
+  static navigationOptions = {
+    header: null
+  };
+
   render() {
     return (
       <SafeAreaView
@@ -32,9 +34,29 @@ class Login extends Component<Props> {
           }
       >
         <View style={styles.container}>
-          <Text>
-              Login
+          <View>
+            <Text style={{color: 'white'}}>logo</Text>
+          </View>
+          <Text style={{color: 'white'}}>
+              CITY Q
           </Text>
+          <View>
+            <Text style={{color: 'white'}}>INNLOGGING</Text>
+          </View>
+          <TouchableOpacity
+          onPress={() => console.log("logging in with google")}
+          >
+            <View>
+              <Text style={{color: 'white'}}>Google</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('Main')}
+          >
+            <View>
+              <Text style={{color: 'white'}}>facebook</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -44,7 +66,7 @@ class Login extends Component<Props> {
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)'
+    backgroundColor: colors.black
   },
   container: {
     flex: 1,
