@@ -1,0 +1,3 @@
+rootProject.name = 'CityQ'
+
+include ':app'
