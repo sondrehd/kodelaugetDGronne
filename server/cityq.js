@@ -36,17 +36,24 @@ app.post('/googleHome', function(request, response){
   const agent = new WebhookClient({ request, response });
   console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
+  console.log('---');
 
-  function speedup(agent) {
+  function speedUp(agent) {
     console.log("speeding up");
     agent.add("speeding up!");
-    
+  }
+
+  function speedDown(agent) {
+    console.log("speeding down");
+    agent.add("speeding down!");
   }
 
   // Map triggered intents to functions
   let intentMap = new Map();
-
-  intentMap.set('Speed up', speedup);
+  console.log('intentmap is set up');
+  intentMap.set('Speed up', speedUp);
+  intentMap.set('Speed down', speedDown);
+  agent.handleRequest(intentMap);
   // if (accessController.isAuthorized(req.body.originalRequest.data.user.userId)) {
   //   intentToActionMapper.mapIntentToAction(req.body.result.metadata.intentName, req.body.result.parameters, socket);
   //   var response = JSON.stringify(req.body.result.fulfillment.speech);
@@ -55,7 +62,7 @@ app.post('/googleHome', function(request, response){
   // else {
   //   res.send(JSON.stringify({ "speech": "You are not Hakon. Get out!", "displayText": "Failed to call server"}));
   // }
-  res.send(JSON.stringify({ "speech": "You are not Hakon. Get out!", "displayText": "Failed to call server"}));
+  //response.send(JSON.stringify({ "speech": "You are not Hakon. Get out!", "displayText": "Failed to call server"}));
 });
 
 
