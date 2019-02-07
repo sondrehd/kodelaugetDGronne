@@ -4,6 +4,7 @@ const https = require('https');
 const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
+const { WebhookClient } = require('dialogflow-fulfillment');
 // const dbHelper = require('./db-helper');
 
 // Certificate
@@ -31,7 +32,21 @@ app.get('/', function(req, res){
   res.send("Hello green world");
 });
 
-app.post('/googleHome', function(req, res){
+app.post('/googleHome', function(request, response){
+  const agent = new WebhookClient({ request, response });
+  console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
+  console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
+
+  function speedup(agent) {
+    console.log("speeding up");
+    agent.add("speeding up!");
+    
+  }
+
+  // Map triggered intents to functions
+  let intentMap = new Map();
+
+  intentMap.set('Speed up', speedup);
   // if (accessController.isAuthorized(req.body.originalRequest.data.user.userId)) {
   //   intentToActionMapper.mapIntentToAction(req.body.result.metadata.intentName, req.body.result.parameters, socket);
   //   var response = JSON.stringify(req.body.result.fulfillment.speech);
