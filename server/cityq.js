@@ -40,32 +40,14 @@ app.post('/googleHome', function(request, response){
 
   function setAssistance(agent) {
     const level = agent.parameters.assistanceLevel;
-
     return new Promise((resolve) => {
-      let output = 'Your assistance level is updated to ' + level;
       console.log('start update');
-      dbHelper.updateValue('level', "assistancelevel='" + level + "'", 'id=1');
+      dbHelper.updateValue(() => {
+        agent.add('Your assistance level is updated to ' + level);
+        console.log('Your assistance level is updated to ' + level);
+        resolve();
+      }, 'level', "assistancelevel='" + level + "'", 'id=1');
     })
-
-    // TODO: Handle promise
-    //console.log('Updating assistance');
-
-    //dbHelper.setValue('level-high');
-
-    // dbHelper.setValue(level, 'level');
-
-    // dbHelper.getValues((rows) => {
-    //   console.log(rows);
-    //   let str = JSON.stringify(rows);
-    //   agent.add(str);
-    // }, 'level');
-
-    // if (level === 'up' || level === 'down') {
-    //   agent.add('Setting assistance ' + level);
-    // }
-    // else {
-    //   agent.add('Updating assistance to level ' + level);
-    // }
   }
 
   function getAssistance(agent) {
@@ -86,8 +68,17 @@ app.post('/googleHome', function(request, response){
   }
 
   function getSpeed(agent) {
-    console.log('reading speed');
-    agent.add('Your current speed is 20km/h');
+    return new Promise((resolve) => {
+      let output = 'Your speed is ';
+      dbHelper.getValues((rows) => {
+        let latest = rows[0];
+        console.log(rows);
+        output += latest['speed'];
+        output += ' kilometre per hour';
+        agent.add(output);
+        resolve();
+      }, 'speed')
+    })
   }
 
   // Map triggered intents to functions

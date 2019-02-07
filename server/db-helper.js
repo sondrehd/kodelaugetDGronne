@@ -17,21 +17,15 @@ function getNewClient() {
   return new Client(postgresSecrets.dbConfig);
 }
 
-function updateValue(table, value, where) {
-  console.log("table: " + table);
-  console.log("value: " + value);
-  console.log("where: " + where);
+function updateValue(callback, table, value, where) {
   const sql =
     'UPDATE ' + table + ' SET ' + value + ' WHERE ' + where;
-  console.log("sql");
-  console.log(sql);
+  console.log('updating with sql command: ' + sql);
   if (clientConnected) {
     try {
       client.query(sql);
-      //client.query(sql, [value]);
-      console.log('success');
+      callback();
     } catch (e) {
-      console.log('catching error');
       console.log(`error ${e.stack}`);
     }
   }
