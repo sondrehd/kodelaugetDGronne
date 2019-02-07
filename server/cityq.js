@@ -38,21 +38,28 @@ app.post('/googleHome', function(request, response){
   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
   console.log('---');
 
-  function speedUp(agent) {
-    console.log("speeding up");
-    agent.add("speeding up!");
+  function setAssistance(agent) {
+    const level = agent.parameters.assistanceLevel;
+    if (level === undefined) agent.add('Assistance level is not defined')
+    console.log('Updating assistance');
+    if (level === 'up' || level === 'down') {
+      agent.add('Setting assistance ' + level);
+    }
+    else {
+      agent.add('Updating assistance to level ' + level);
+    }
   }
 
-  function speedDown(agent) {
-    console.log("speeding down");
-    agent.add("speeding down!");
+  function getSpeed(agent) {
+    console.log('reading speed');
+    agent.add('Your current speed is 20km/h');
   }
 
   // Map triggered intents to functions
   let intentMap = new Map();
   console.log('intentmap is set up');
-  intentMap.set('Speed up', speedUp);
-  intentMap.set('Speed down', speedDown);
+  intentMap.set('Get speed', getSpeed);
+  intentMap.set('Set assistance', setAssistance);
   agent.handleRequest(intentMap);
   // if (accessController.isAuthorized(req.body.originalRequest.data.user.userId)) {
   //   intentToActionMapper.mapIntentToAction(req.body.result.metadata.intentName, req.body.result.parameters, socket);
