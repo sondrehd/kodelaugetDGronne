@@ -51,11 +51,6 @@ app.post('/googleHome', function(request, response){
   }
 
   function getAssistance(agent) {
-    const level = agent.parameters.assistanceLevel;
-    if (level === undefined) {
-      agent.add('Assistance level is not defined');
-      return
-    }
     return new Promise((resolve) => {
       let output = 'Your assistance level is ';
       dbHelper.getValues((rows) => {
