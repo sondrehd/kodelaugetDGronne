@@ -1,9 +1,10 @@
 
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {AppState, StyleSheet, Text, View} from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
+import { StackNavigator } from './app/AppNavigator';
 import { store, persistor } from './app/redux/configureStore';
 import { setAppState } from './app/redux/actions/appState';
 import Main from './app/views/Main';
@@ -13,10 +14,7 @@ export default class App extends Component<Props> {
   async componentDidMount() {
     // store.dispatch(getAppData());
     this.handleAppStateChange(AppState.currentState);
-    store.dispatch(setNetworkEnabled(isConnected));
-
     AppState.addEventListener('change', this.handleAppStateChange);
-    
   }
 
   componentWillUnmount() {
@@ -43,7 +41,7 @@ export default class App extends Component<Props> {
     return (
       <Provider store={store}>
         <PersistGate loading={false} persistor={persistor}>
-          <Main style={styles.container} />
+          <StackNavigator/>
         </PersistGate>
       </Provider>
     );

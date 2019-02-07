@@ -22,7 +22,7 @@ type Props = {
   
 };
 
-class Main extends Component<Props> {
+class Login extends Component<Props> {
   
   render() {
     return (
@@ -51,33 +51,8 @@ const styles = StyleSheet.create({
     opacity: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white'
-  },
-  header: {
-    marginTop: 80,
-    marginBottom: 80
-  },
-  headerText: {
-    fontFamily: 'Avenir',
-    fontSize: 20
-  },
-  tilesContainer: {
-    flex: 1,
-    alignItems: 'center',
-    flexDirection: 'column',
-    alignItems: 'flex-start'
-  },
-  tileRow: {
-    flexDirection: 'row'
-  },
-  scheduleButtonRow: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginLeft: 7,
-    marginRight: 7
+    backgroundColor: colors.black
   }
 });
 
-export default connect(mapStateToProps)(Main);
+export default connect(mapStateToProps)(Login);
