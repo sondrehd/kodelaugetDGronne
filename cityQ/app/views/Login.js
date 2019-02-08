@@ -64,7 +64,6 @@ class Login extends Component<Props> {
               </View>
             </TouchableOpacity>
           </View>
-          <StationModal />
         </View>
       </SafeAreaView>
     );
