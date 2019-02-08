@@ -26,10 +26,9 @@ function getLockValue() {
 function setOnOff(isOn, table) {
     return new Promise((resolve) => {
         dbHelper.updateValue(() => {
-            console.log('setting on ' + isOn);
             if (socket) {
                 console.log("emmiting message");
-                socket.emit('message', { 'table': table });
+                socket.emit('message', {[table]: isOn });
             }
             resolve();
         }, table, "ison=" + isOn, 'id=1');
