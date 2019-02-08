@@ -6,6 +6,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const { WebhookClient } = require('dialogflow-fulfillment');
 const dbHelper = require('./db-helper');
+const assistanceLevel = require('./assistance-level');
 
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/hawkon.eu/privkey.pem', 'utf8');
@@ -38,95 +39,6 @@ app.post('/googleHome', function(request, response){
   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
   console.log('---');
 
-  function getAssistanceLevel() {
-    console.log('getting assistance level');
-    return new Promise((resolve) => {
-      dbHelper.getValues((rows) => {
-        res = rows[0]['assistancelevel'];
-        console.log('db assistance level: ' + res);
-        resolve(res);
-      }, 'level')
-    })
-  }
-
-  function setAssistanceLevel(level) {
-    return new Promise((resolve) => {
-      dbHelper.updateValue(() => {
-        console.log('setting assistance level ' + level);
-        resolve();
-      }, 'level', "assistancelevel='" + level + "'", 'id=1');
-    })
-  }
-
-  function setAssistance(agent) {
-    return new Promise((resolve) => {
-      const level = agent.parameters.assistanceLevel;
-      const levels = ['off', 'low', 'medium', 'high'];
-      let getAssistanceLevelPromise = getAssistanceLevel();
-
-      getAssistanceLevelPromise.then((currentLevel) => {
-        console.log('current assistanceLevel is ' + currentLevel);
-        let i = levels.indexOf(currentLevel);
-        if (i === -1) {
-          agent.add('Error reading assistance level from database');
-          resolve();
-        }
-        // Index is valid
-        if (level === 'down') {
-          let newLevelIndex = i-1;
-          if (newLevelIndex < 0) {
-            agent.add('Assistance is already turned off')
-            resolve();
-          }
-          else {
-            let newLevel = levels[newLevelIndex];
-            if (newLevel === 'off') agent.add('Turning assistance off');
-            else agent.add('Turning assistance level down to ' + newLevel);
-            setAssistanceLevel(newLevel).then(() => resolve()) 
-          }
-        }
-        else if (level === 'up') {
-          console.log('up');
-          if (currentLevel === 'high') {
-            agent.add('Sorry, you can not get more assistance. Assistance level is already high');
-            resolve();
-          }
-          else {
-            let newLevel = levels[levels.indexOf(currentLevel)+1]
-            console.log('new level: ' + newLevel);
-            agent.add('Turning assistance level up to ' + newLevel);
-            setAssistanceLevel(newLevel).then(() => resolve());
-          }
-        }
-        else if (currentLevel === level) {
-          agent.add('Assistance level is already set to ' + level);
-        }
-        else {
-          dbHelper.updateValue(() => {
-            console.log(level);
-            if (level === 'off') agent.add('Your assistance is turned off');
-            else agent.add('Your assistance level is updated to ' + level);
-            console.log('Your assistance level is updated to ' + level);
-            resolve();
-          }, 'level', "assistancelevel='" + level + "'", 'id=1');
-        }
-      })
-    })
-  }
-
-  function getAssistance(agent) {
-    return new Promise((resolve) => {
-      // use help function instead
-      dbHelper.getValues((rows) => {
-        console.log(rows);
-        res = rows[0]['assistancelevel'];
-        if (res === 'off') agent.add('Your assistance is stopped')
-        else agent.add('Your assistance level is ' + res);
-        resolve();
-      }, 'level')
-    })
-  }
-
   function getSpeed(agent) {
     return new Promise((resolve) => {
       let output = 'Your speed is ';
@@ -145,8 +57,8 @@ app.post('/googleHome', function(request, response){
   let intentMap = new Map();
   console.log('intentmap is set up');
   intentMap.set('Get speed', getSpeed);
-  intentMap.set('Set assistance', setAssistance);
-  intentMap.set('Get assistance', getAssistance);
+  intentMap.set('Set assistance', assistanceLevel.setAssistance);
+  intentMap.set('Get assistance', assistanceLevel.getAssistance);
   agent.handleRequest(intentMap);
   // if (accessController.isAuthorized(req.body.originalRequest.data.user.userId)) {
   //   intentToActionMapper.mapIntentToAction(req.body.result.metadata.intentName, req.body.result.parameters, socket);
