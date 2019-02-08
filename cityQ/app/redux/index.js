@@ -7,11 +7,13 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 import appState from './reducers/appState';
 import appData from './reducers/appData';
+import nav from './reducers/nav';
 
 
 const rootReducer = combineReducers({
   appState,
-  appData
+  appData,
+  nav
 });
 
 const persistConfig = {
@@ -20,7 +22,8 @@ const persistConfig = {
   stateReconciler: autoMergeLevel2,
   blacklist: [
     'appState',
-    'appData'
+    'appData',
+    'nav'
   ]
   // transforms: [locationBlacklist]
 };
