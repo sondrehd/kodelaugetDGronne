@@ -16,6 +16,7 @@ import MyLocation from "../icons/Test";
 import Google from "../icons/Google";
 import Facebook from "../icons/Facebook";
 
+import StationModal from "../components/StationModal";
 function mapStateToProps(state) {
   return {};
 }
@@ -34,7 +35,7 @@ class Login extends Component<Props> {
       <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.container}>
           <View style={styles.Top}>
-            <CityQIcon height="150" width="150" fill="white" />
+            <CityQIcon height='150' width='150' fill='white' />
           </View>
           <View style={styles.Bottom}>
             <View>
@@ -44,8 +45,7 @@ class Login extends Component<Props> {
             </View>
             <TouchableOpacity
               style={{ ...styles.Button, backgroundColor: colors.googleRed }}
-              onPress={() => this.props.navigation.navigate('Main')}
-            >
+              onPress={() => this.props.navigation.navigate("Main")}>
               <View style={styles.ButtonView}>
                 <Google style={styles.ButtonLogo} />
                 <Text style={{ color: "white", ...styles.ButtonText }}>
@@ -55,8 +55,7 @@ class Login extends Component<Props> {
             </TouchableOpacity>
             <TouchableOpacity
               style={{ ...styles.Button, backgroundColor: colors.facebookBlue }}
-              onPress={() => this.props.navigation.navigate("Main")}
-            >
+              onPress={() => this.props.navigation.navigate("Main")}>
               <View style={styles.ButtonView}>
                 <Facebook style={styles.ButtonLogo} />
                 <Text style={{ color: "white", ...styles.ButtonText }}>
