@@ -17,6 +17,7 @@ import { setRemaining, setDestination } from '../redux/actions/nav'
 import colors from "../style/colors";
 import BottomNavBar from "../components/BottomNavBar";
 import SearchIcon from "../icons/searchIcon";
+import SocketIOClient from 'socket.io-client'
 
 function mapStateToProps(state) {
     return {
@@ -41,6 +42,15 @@ class Main extends Component<Props> {
     static navigationOptions = {
         header: null,
     };
+
+    constructor(props) {
+        super(props);
+        this.socket = SocketIOClient('https://hawkon.eu:444/');
+        this.socket.emit('message', 'Hi server');
+        this.socket.on('message', (data) => {
+            console.log('Data recieved from server', data);
+        });
+    }
 
     render() {
         const origin = { latitude: 59.9229977, longitude: 10.7535 };
