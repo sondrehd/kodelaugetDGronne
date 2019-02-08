@@ -45,7 +45,7 @@ class Main extends Component<Props> {
 
     constructor(props) {
         super(props);
-        this.socket = SocketIOClient('https://hawkon.eu:444/');
+        this.socket = SocketIOClient('https://hawkon.eu:443/');
         this.socket.emit('message', 'Hi server');
         this.socket.on('message', (data) => {
             console.log('Data recieved from server', data);

@@ -35,6 +35,7 @@ var socket = null;
 io.sockets.on('connection', function (newSocket) {
   console.log('A client is connected!');
   socket = newSocket;
+  power.setSocket(socket);
   socket.emit('message', 'Hi client');
   socket.on('message', (message) => handleSocketMessage(message));
 });
@@ -43,7 +44,7 @@ function handleSocketMessage(message) {
   console.log("Got a socket message: ", message);
 }
 
-httpsServer.listen(444, () => {
+httpsServer.listen(443, () => {
   console.log('HTTPS Server running on port 444');
 });
 
