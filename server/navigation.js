@@ -24,7 +24,7 @@ function startStop(agent) {
             agent.add('Starting navigation towards your ' + destination);
             if (socket) {
                 console.log("emmiting message");
-                socket.emit('message', { 'level': level });
+                socket.emit('message', { 'nav': destination });
             }
             // Todo: Do some more 'start' magic
         }

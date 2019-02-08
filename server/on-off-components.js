@@ -21,7 +21,7 @@ function setOnOff(isOn, table) {
             console.log('setting on ' + isOn);
             if (socket) {
                 console.log("emmiting message");
-                socket.emit('message', { 'level': level });
+                socket.emit('message', { 'table': table });
             }
             resolve();
         }, table, "ison=" + isOn, 'id=1');

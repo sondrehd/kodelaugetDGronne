@@ -62,7 +62,8 @@ function handlePowerUp(agent, levels, currentLevel) {
 
 function setPower(agent) {
     return new Promise((resolve) => {
-        const level = agent.parameters.powerLevel;
+        let level = agent.parameters.powerLevel;
+        if (level === 'on') level = 'eco';
         const levels = ['off', 'eco', 'normal', 'high'];
 
         getPowerLevel().then((currentLevel) => {
