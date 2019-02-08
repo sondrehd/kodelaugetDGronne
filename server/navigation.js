@@ -2,17 +2,20 @@ const dbHelper = require('./db-helper');
 
 function startStop(agent) {
     return new Promise((resolve) => {
-        const startStop = agent.parameters.startstop;
+        const onoff = agent.parameters.onoff;
         const destination = agent.parameters.destination;
 
-        console.log(startStop);
+        console.log(onoff);
         console.log(destination);
 
-        if (startStop === 'stop') {
+        if (onoff === 'off') {
             agent.add('Stopping navigation');
             // Todo: Do some more 'stop' magic
         }
-        else if (destination != undefined) {
+        else if (destination === '') {
+            agent.add('Please select a destination');
+        }
+        else {
             agent.add('Starting navigation towards your ' + destination);
             // Todo: Do some more 'start' magic
         }
