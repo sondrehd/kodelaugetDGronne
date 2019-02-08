@@ -36,6 +36,8 @@ io.sockets.on('connection', function (newSocket) {
   console.log('A client is connected!');
   socket = newSocket;
   power.setSocket(socket);
+  navigation.setSocket(socket);
+  onOffComponents.setSocket(socket);
   socket.emit('message', 'Hi client');
   socket.on('message', (message) => handleSocketMessage(message));
 });

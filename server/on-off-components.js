@@ -1,4 +1,9 @@
 const dbHelper = require('./db-helper');
+var socket = null;
+
+function setSocket(newSocket) {
+    socket = newSocket;
+}
 
 function getOnOff(table) {
     return new Promise((resolve) => {
@@ -14,6 +19,10 @@ function setOnOff(isOn, table) {
     return new Promise((resolve) => {
         dbHelper.updateValue(() => {
             console.log('setting on ' + isOn);
+            if (socket) {
+                console.log("emmiting message");
+                socket.emit('message', { 'level': level });
+            }
             resolve();
         }, table, "ison=" + isOn, 'id=1');
     })
@@ -66,5 +75,6 @@ function lockOnOff(agent) {
 
 module.exports = {
     lightOnOff,
-    lockOnOff
+    lockOnOff,
+    setSocket
 }

@@ -1,5 +1,4 @@
 const dbHelper = require('./db-helper');
-
 var socket = null;
 
 function setSocket(newSocket) {
@@ -23,7 +22,6 @@ function setPowerLevel(level) {
             console.log('setting power mode ' + level);
             if (socket) {
                 console.log("emmiting message");
-
                 socket.emit('message', { 'level': level });
             }
             resolve();
