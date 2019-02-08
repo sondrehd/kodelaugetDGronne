@@ -21,17 +21,10 @@ function setOnOff(isOn, table) {
 
 function lightOnOff(agent) {
     return new Promise((resolve) => {
-        console.log('start light onoff');
         const onoff = agent.parameters.onoff;
         let isOn = (onoff === 'on');
-
         getOnOff('light').then((res) => {
-            console.log('res: ' + res);
-            console.log(typeof res);
-            console.log('ison: ' + isOn.toString());
-            console.log(typeof isOn);
             let isSame = (res == isOn);
-            console.log('is same: ' + isSame);
             if (isSame) {
                 agent.add('light is already ' + onoff);
                 resolve();
@@ -50,15 +43,24 @@ function lightOnOff(agent) {
 
 function lockOnOff(agent) {
     return new Promise((resolve) => {
-        console.log('start lock onoff');
         const onoff = agent.parameters.onoff;
         let isOn = (onoff === 'on');
-        console.log(onoff + ', ' + isOn);
-        setOnOff(isOn, 'lock').then(() => {
-            if (isOn) agent.add('Bike is locked');
-            else agent.add('Bike is unlocked');
-            resolve();
-        });
+        getOnOff('lock').then((res) => {
+            let isSame = (res == isOn);
+            if (isSame) {
+                if (isOn) agent.add('Bike is already locked');
+                else agent.add('Bike is already unlocked. Ready to go!');
+                resolve();
+            }
+            else {
+                console.log(onoff + ', ' + isOn);
+                setOnOff(isOn, 'lock').then(() => {
+                    if (isOn) agent.add('Ok, locking bike');
+                    else agent.add('Ok, unlocking bike');
+                    resolve();
+                });
+            }
+        })
     })
 }
 
