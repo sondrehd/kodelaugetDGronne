@@ -15,7 +15,7 @@ import Reservations from "../icons/Reservations";
 import TravelNow from "../icons/TravelNow";
 import CityQBike from "../icons/CityQBike";
 import MiniLock from "../icons/MiniLock";
-import { setStationModalVisible } from "../redux/actions/UIState";
+import { setStationModalVisible, setNavigationMode } from "../redux/actions/UIState";
 
 function mapStateToProps(state) {
   return {
@@ -26,6 +26,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     close: () => dispatch(setStationModalVisible(false)),
+    setNavigationMode: bool => dispatch(setNavigationMode(bool)),
+    setStationModalVisible: bool => dispatch(setStationModalVisible(bool))
   };
 }
 
@@ -36,89 +38,95 @@ type Props = {
 
 class StationModal extends Component<Props> {
   render() {
-    console.log("khjg");
     let station =
       this.props.appData.stations &&
       this.props.appData.stations.find(station => {
         return station.title === this.props.UIState.selectedStationId;
       });
     if (station) {
-      console.log("fda");
-
       return (
         <View
           style={{
-            ...styles.Container,
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            width: "100%",
+            position: 'absolute'
           }}>
           <TouchableHighlight
             style={styles.Container}
             onPress={this.props.close}>
-            <TouchableWithoutFeedback>
-              <View style={styles.ModalContainer}>
-                <View style={styles.Top}>
-                  <View
-                    style={{
-                      flexDirection: "column",
-                      flexBasis: "50%",
-                      justifyContent: "center",
-                    }}>
-                    <Text style={{ color: colors.white, fontSize: 20 }}>
-                      {station.title}
-                    </Text>
-                    <Text style={{ color: colors.white, fontSize: 15 }}>
-                      {station.subTitle}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      width: "100%",
-                      flexBasis: "50%",
-                      flexDirection: "row",
-                      alignItems: "flex-end",
-                    }}>
-                    <TouchableHighlight
-                      onPress={() => console.log("Pressed reservasjon")}>
-                      <View style={{ marginRight: 10, ...styles.IconAndText }}>
-                        <CityQBike />
-                        <Text
-                          style={{
-                            color: colors.white,
-                            padding: 5,
-                            fontSize: 20,
-                          }}>
-                          {station.available}
-                        </Text>
-                      </View>
-                    </TouchableHighlight>
-                    <TouchableHighlight
-                      onPress={() => console.log("Pressed reservasjon")}>
-                      <View style={styles.IconAndText}>
-                        <MiniLock />
-                        <Text
-                          style={{
-                            color: colors.white,
-                            padding: 5,
-                            fontSize: 20,
-                          }}>
-                          {station.freeLocks}
-                        </Text>
-                      </View>
-                    </TouchableHighlight>
-                  </View>
-                </View>
+            <View />
+          </TouchableHighlight>
+          <View style={styles.ModalContainer}>
+            <View style={styles.Top}>
+              <View
+                style={{
+                  flexDirection: "column",
+                  flexBasis: "50%",
+                  justifyContent: "center",
+                }}>
+                <Text style={{ color: colors.white, fontSize: 20 }}>
+                  {station.title}
+                </Text>
+                <Text style={{ color: colors.white, fontSize: 15 }}>
+                  {station.subTitle}
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: "100%",
+                  flexBasis: "50%",
+                  flexDirection: "row",
+                  alignItems: "flex-end",
+                }}>
 
-                <View style={styles.Middle}>
-                  <Text style={styles.Text}>RESERVASJON</Text>
-                  <Reservations />
+                <View style={{ marginRight: 10, ...styles.IconAndText }}>
+                  <CityQBike />
+                  <Text
+                    style={{
+                      color: colors.white,
+                      padding: 5,
+                      fontSize: 20,
+                    }}>
+                    {station.available}
+                  </Text>
                 </View>
-                <View style={styles.Bottom}>
-                  <Text style={styles.Text}>REIS NÅ</Text>
-                  <TravelNow />
+                <View style={styles.IconAndText}>
+                  <MiniLock />
+                  <Text
+                    style={{
+                      color: colors.white,
+                      padding: 5,
+                      fontSize: 20,
+                    }}>
+                    {station.freeLocks}
+                  </Text>
                 </View>
               </View>
-            </TouchableWithoutFeedback>
-          </TouchableHighlight>
-        </View>
+            </View>
+
+            <TouchableHighlight
+              style={{ zIndex: 4 }}
+              onPress={() => console.log("Pressed reservasjon")}>
+              <View style={styles.Middle}>
+                <Text style={styles.Text}>RESERVASJON</Text>
+                <Reservations />
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight
+              style={{ zIndex: 4 }}
+              onPress={() => {
+                this.props.setNavigationMode(true);
+                this.props.setStationModalVisible(false);
+              }}>
+              <View style={styles.Bottom}>
+                <Text style={styles.Text}>REIS NÅ</Text>
+                <TravelNow />
+              </View>
+            </TouchableHighlight>
+          </View>
+        </View >
       );
     } else {
       return null;

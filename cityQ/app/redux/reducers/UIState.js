@@ -1,11 +1,13 @@
 import {
   SET_STATION_MODAL_VISIBLE,
   SET_SELECTED_STATION,
+  SET_NAVIGATION_MODE
 } from "../actions/UIState";
 
 const initialState = {
   stationModalVisible: false,
   selectedStationId: null,
+  navigationMode: true
 };
 
 export default (UIReducer = (state = initialState, action) => {
@@ -20,6 +22,12 @@ export default (UIReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedStationId: action.id,
+      };
+    }
+    case SET_NAVIGATION_MODE: {
+      return {
+        ...state,
+        navigationMode: action.navigationMode,
       };
     }
     default: {
