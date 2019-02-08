@@ -50,53 +50,54 @@ app.post('/googleHome', function(request, response){
   }
 
   function setAssistance(agent) {
-    const level = agent.parameters.assistanceLevel;
-    
-    if (level.includes('down')) {
-      // get current
-      // update slower (if not on null or low)
-    }
-    else if (level.includes('up')) {
-      console.log('up');
-      let firstPromise = getAssistanceLevel();
-      console.log('up1');
-      agent.add('up1');
+    return new Promise((resolve) => {
+      const level = agent.parameters.assistanceLevel;
+      const levels = ['off', 'low', 'medium', 'high'];
+      let getAssistanceLevelPromise = getAssistanceLevel();
 
-      return new Promise((resolve) => {
-        firstPromise.then((level) => {
-          console.log('up2 ' + level);
-          agent.add('success ' + level);
+      getAssistanceLevelPromise.then((currentLevel) => {
+        console.log('current assistanceLevel is currently ' + currentLevel);
+        let i = levels.indexOf(currentLevel);
+        if (i === -1) {
+          agent.add('Could not read current level in db');
           resolve();
-        })
+        }
+        // Index is valid
+        if (level === 'down') {
+          let newLevelIndex = i-1;
+          if (newLevelIndex < 0) {
+            agent.add('Assistance is already turned off')
+            resolve();
+          }
+          else {
+            agent.add('Turning assistance level down to ' + levels[newLevelIndex]);
+            resolve();
+            // Update db
+          }
+        }
+        else if (level === 'up') {
+          console.log('up');
+          if (currentLevel === 'high') {
+            agent.add('Sorry, you can not get more assistance. Assistance level is already high');
+            resolve();
+          }
+          else {
+            agent.add('Turning assistance level up to ' + levels[levels.length+1]);
+            resolve();
+            // Update db
+          }
+        }
+        else {
+          dbHelper.updateValue(() => {
+            console.log(level);
+            if (level.includes('null')) agent.add('Your assistance is turned off');
+            else agent.add('Your assistance level is updated to ' + level);
+            console.log('Your assistance level is updated to ' + level);
+            resolve();
+          }, 'level', "assistancelevel='" + level + "'", 'id=1');
+        }
       })
-      //   console.log('currentLevel is ' + currentLevel);
-      //   if (level == 'null' || level == null ) {
-      //     console.log('assistance level is null, turning up to low');
-      //     setAssistanceLevel('low');
-      //     resolve();
-      //   }
-      //   else if (level.includes('low')) {
-          
-      //   }
-      //   else if (level.includes('medium')) {
-          
-      //   }
-      //   else if (level.includes('high')) {
-          
-      //   }
-      // })
-    }
-
-    // return new Promise((resolve) => {
-    //   console.log('start update');
-    //   dbHelper.updateValue(() => {
-    //     console.log(level);
-    //     if (level.includes('null')) agent.add('Your assistance is turned off');
-    //     else agent.add('Your assistance level is updated to ' + level);
-    //     console.log('Your assistance level is updated to ' + level);
-    //     resolve();
-    //   }, 'level', "assistancelevel='" + level + "'", 'id=1');
-    // })
+    })
   }
 
   function getAssistance(agent) {
