@@ -17,16 +17,22 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    setNavigationMode: bool => dispatch(setNavigationMode(bool))
+    setNavigationMode: bool => dispatch(setNavigationMode(bool)),
   };
 }
 class BottomNavBar extends Component<Props> {
-
   render() {
     return (
       <View style={styles.Container}>
         <View style={{ ...styles.Cell, flexBasis: "25%" }}>
-          <Gps fill={this.props.UIState.navigationMode ? 'gray' : 'cyan'} />
+          <Gps
+            fill={
+              this.props.UIState.navigationMode &&
+              !this.props.UIState.userProfileMode
+                ? "gray"
+                : "cyan"
+            }
+          />
         </View>
         <View
           style={{
@@ -36,14 +42,22 @@ class BottomNavBar extends Component<Props> {
             borderColor: colors.black,
             flexBasis: "50%",
           }}>
-          <CityQNoText fill={this.props.UIState.navigationMode ? 'cyan' : 'gray'} />
+          {console.log("[sondre]", this.props.UIState.navigationMode)}
+          <CityQNoText
+            fill={
+              this.props.UIState.navigationMode &&
+              !this.props.UIState.userProfileMode
+                ? "cyan"
+                : "gray"
+            }
+          />
         </View>
         <View style={{ ...styles.Cell, flexBasis: "25%" }}>
-          <UserAccount fill={'gray'} />
+          <UserAccount fill={"gray"} />
         </View>
       </View>
     );
-  };
+  }
 }
 
 export default connect(
