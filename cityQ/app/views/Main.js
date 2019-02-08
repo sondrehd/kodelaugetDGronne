@@ -16,6 +16,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import { setRemaining, setDestination } from '../redux/actions/nav'
 import colors from "../style/colors";
 import BottomNavBar from "../components/BottomNavBar";
+import SearchIcon from "../icons/searchIcon";
 
 function mapStateToProps(state) {
     return {
@@ -52,7 +53,8 @@ class Main extends Component<Props> {
                 }
             >
                 <View style={styles.container}>
-                    <View style={{ height: '8%', width: '100%', backgroundColor: colors.black, justifyContent: 'center', paddingLeft: 30 }}>
+                    <View style={{ alignItems: 'center', backgroundColor: colors.black, flexDirection: 'row', height: '8%', width: '100%', justifyContent: 'flex-start', paddingLeft: 30 }}>
+                        <SearchIcon />
                         <Text style={{ color: 'white' }}>
                             Søk etter hentested
                         </Text>
