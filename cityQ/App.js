@@ -1,18 +1,19 @@
 
 
-import React, {Component} from 'react';
-import {AppState, StyleSheet, Text, View} from 'react-native';
+import React, { Component } from 'react';
+import { AppState, StyleSheet, Text, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { StackNavigator } from './app/AppNavigator';
 import { store, persistor } from './app/redux/configureStore';
 import { setAppState } from './app/redux/actions/appState';
+import { getAppData } from './app/redux/actions/appData';
 import Main from './app/views/Main';
 
 type Props = {};
 export default class App extends Component<Props> {
   async componentDidMount() {
-    // store.dispatch(getAppData());
+    store.dispatch(getAppData());
     this.handleAppStateChange(AppState.currentState);
     AppState.addEventListener('change', this.handleAppStateChange);
   }
@@ -41,7 +42,7 @@ export default class App extends Component<Props> {
     return (
       <Provider store={store}>
         <PersistGate loading={false} persistor={persistor}>
-          <StackNavigator/>
+          <StackNavigator />
         </PersistGate>
       </Provider>
     );
