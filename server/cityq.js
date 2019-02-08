@@ -8,6 +8,7 @@ const { WebhookClient } = require('dialogflow-fulfillment');
 const dbHelper = require('./db-helper');
 const power = require('./power-level');
 const navigation = require('./navigation');
+const onOffComponents = require('./on-off-components');
 
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/hawkon.eu/privkey.pem', 'utf8');
@@ -76,6 +77,9 @@ app.post('/googleHome', function(request, response){
 
   intentMap.set('Nav - Start and stop', navigation.startStop);
   intentMap.set('Nav - Time left', navigation.timeLeft);
+
+  intentMap.set('Light - On and off', onOffComponents.lightOnOff);
+  intentMap.set('Lock - On and off', onOffComponents.lockOnOff);
 
   intentMap.set('Set power', power.setPower);
   intentMap.set('Get power', power.getPower);

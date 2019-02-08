@@ -20,6 +20,7 @@ function getNewClient() {
 function updateValue(callback, table, value, where) {
   const sql =
     'UPDATE ' + table + ' SET ' + value + ' WHERE ' + where;
+    console.log('update sql ' + sql);
   if (clientConnected) {
     try {
       client.query(sql);
