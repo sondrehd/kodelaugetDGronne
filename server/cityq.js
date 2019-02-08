@@ -8,6 +8,9 @@ const { WebhookClient } = require('dialogflow-fulfillment');
 const dbHelper = require('./db-helper');
 const power = require('./power-level');
 const navigation = require('./navigation');
+const onOffComponents = require('./on-off-components');
+
+const socketio = require('socket.io');
 
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/hawkon.eu/privkey.pem', 'utf8');
@@ -15,26 +18,43 @@ const certificate = fs.readFileSync('/etc/letsencrypt/live/hawkon.eu/cert.pem', 
 const ca = fs.readFileSync('/etc/letsencrypt/live/hawkon.eu/chain.pem', 'utf8');
 
 const credentials = {
-	key: privateKey,
-	cert: certificate,
-	ca: ca
+  key: privateKey,
+  cert: certificate,
+  ca: ca
 };
 
 app.use(bodyParser.urlencoded({
-    extended: true
+  extended: true
 }));
 app.use(bodyParser.json());
 const httpsServer = https.createServer(credentials, app);
 
-httpsServer.listen(443, () => {
-	console.log('HTTPS Server running on port 444');
+var io = require('socket.io')(httpsServer);
+var socket = null;
+
+io.sockets.on('connection', function (newSocket) {
+  console.log('A client is connected!');
+  socket = newSocket;
+  power.setSocket(socket);
+  navigation.setSocket(socket);
+  onOffComponents.setSocket(socket);
+  socket.emit('message', 'Hi client');
+  socket.on('message', (message) => handleSocketMessage(message));
 });
 
-app.get('/', function(req, res){
+function handleSocketMessage(message) {
+  console.log("Got a socket message: ", message);
+}
+
+httpsServer.listen(443, () => {
+  console.log('HTTPS Server running on port 444');
+});
+
+app.get('/', function (req, res) {
   res.send("Hello green world");
 });
 
-app.post('/googleHome', function(request, response){
+app.post('/googleHome', function (request, response) {
   const agent = new WebhookClient({ request, response });
   console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
@@ -77,6 +97,9 @@ app.post('/googleHome', function(request, response){
   intentMap.set('Nav - Start and stop', navigation.startStop);
   intentMap.set('Nav - Time left', navigation.timeLeft);
 
+  intentMap.set('Light - On and off', onOffComponents.lightOnOff);
+  intentMap.set('Lock - On and off', onOffComponents.lockOnOff);
+
   intentMap.set('Set power', power.setPower);
   intentMap.set('Get power', power.getPower);
   agent.handleRequest(intentMap);
@@ -92,14 +115,14 @@ app.post('/googleHome', function(request, response){
 });
 
 
-app.get('/getValue', function(req, res){
+app.get('/getValue', function (req, res) {
   console.log("/getValue");
   dbHelper.getValues((rows) => {
     res.send(rows);
   });
 });
 
-app.post('/setValue', function(req, res){
+app.post('/setValue', function (req, res) {
   console.log("/setValue");
   dbHelper.setValue("hei");
   res.send("done");

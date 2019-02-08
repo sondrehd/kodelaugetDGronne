@@ -11,6 +11,8 @@ import {
 import { mapStyle } from "../style/mapStyle";
 import { connect } from "react-redux";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
+import { setRemaining, setDestination } from "../redux/actions/nav";
 import {
   setStationModalVisible,
   setSelectedStation,
@@ -18,44 +20,65 @@ import {
 import colors from "../style/colors";
 import BottomNavBar from "../components/BottomNavBar";
 import StationModal from "../components/StationModal";
+import SearchIcon from "../icons/searchIcon";
+import SocketIOClient from "socket.io-client";
 
 function mapStateToProps(state) {
   return {
     appData: state.appData,
     UIState: state.UIState,
+    nav: state.nav,
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
     setSelectedStation: id => dispatch(setSelectedStation(id)),
     setModalVisible: value => dispatch(setStationModalVisible(value)),
+    setDestination: destination => dispatch(setDestination(destination)),
+    setRemaining: (time, distance) => dispatch(setRemaining(time, distance)),
   };
 }
 type Props = {
   appData: Object,
+  nav: Object,
 };
 
 class Main extends Component<Props> {
   static navigationOptions = {
     header: null,
   };
+  constructor(props) {
+    super(props);
+    this.socket = SocketIOClient("https://hawkon.eu:443/");
+    this.socket.emit("message", "Hi server");
+    this.socket.on("message", data => {
+      console.log("Data recieved from server", data);
+    });
+  }
 
   render() {
+    const origin = { latitude: 59.9229977, longitude: 10.7535 };
+    const GOOGLE_MAPS_APIKEY = "AIzaSyAb5Q4SBx-bfwZZuyep8e5BrEPHzmdICpY";
+
     return (
       <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.container}>
           <View
             style={{
+              alignItems: "center",
+              backgroundColor: colors.black,
+              flexDirection: "row",
               height: "8%",
               width: "100%",
-              backgroundColor: colors.black,
-              justifyContent: "center",
+              justifyContent: "flex-start",
               paddingLeft: 30,
             }}>
+            <SearchIcon />
             <Text style={{ color: "white" }}>Søk etter hentested</Text>
           </View>
           {this.props.appData && this.props.appData.stations && (
             <MapView
+              ref={c => (this.mapView = c)}
               customMapStyle={mapStyle}
               provider={PROVIDER_GOOGLE}
               style={{ height: "92%", width: "100%" }}
@@ -92,6 +115,21 @@ class Main extends Component<Props> {
                   </View>
                 </Marker>
               ))}
+              {this.props.nav.destination && (
+                <MapViewDirections
+                  origin={origin}
+                  destination={this.props.nav.destination}
+                  apikey={GOOGLE_MAPS_APIKEY}
+                  strokeWidth={3}
+                  strokeColor={colors.black}
+                  optimizeWaypoints={true}
+                  onReady={result => {
+                    this.props.setRemaining(result.duration, result.distance);
+                    console.log(result.distance + " km");
+                    console.log(result.duration + " min");
+                  }}
+                />
+              )}
             </MapView>
           )}
           {this.props.UIState.stationModalVisible && <StationModal />}

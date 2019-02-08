@@ -33,7 +33,6 @@ function updateValue(callback, table, value, where) {
 function setValue(value, table = 'cityq') {
   const sql =
     'INSERT INTO ' + table + '(value1) ' + 'VALUES ($1)';
-
   if (clientConnected) {
     try {
       client.query(sql, [value]);
@@ -49,7 +48,6 @@ function getValues(callback, table = 'cityq') {
   if (clientConnected) {
     try {
       client.query(sql, (err, res) => {
-        console.log(res);
         callback(res.rows);
       });
     } catch (e) {

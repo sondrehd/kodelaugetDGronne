@@ -1,4 +1,9 @@
 const dbHelper = require('./db-helper');
+var socket = null;
+
+function setSocket(newSocket) {
+    socket = newSocket;
+}
 
 function startStop(agent) {
     return new Promise((resolve) => {
@@ -17,6 +22,10 @@ function startStop(agent) {
         }
         else {
             agent.add('Starting navigation towards your ' + destination);
+            if (socket) {
+                console.log("emmiting message");
+                socket.emit('message', { 'level': level });
+            }
             // Todo: Do some more 'start' magic
         }
         resolve();
@@ -31,5 +40,6 @@ function timeLeft(agent) {
 
 module.exports = {
     startStop,
-    timeLeft
+    timeLeft,
+    setSocket
 }
