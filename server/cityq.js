@@ -53,10 +53,26 @@ app.post('/googleHome', function(request, response){
     })
   }
 
+  function getBattery(agent) {
+    return new Promise((resolve) => {
+      let output = 'Your battery level is ';
+      dbHelper.getValues((rows) => {
+        console.log(rows);
+        let batteryPercent = rows[0]['batterylevel'];
+        output += batteryPercent;
+        output += ' percent';
+        agent.add(output);
+        resolve();
+      }, 'battery')
+    })
+  }
+
   // Map triggered intents to functions
   let intentMap = new Map();
   console.log('intentmap is set up');
   intentMap.set('Get speed', getSpeed);
+  intentMap.set('Get battery', getBattery);
+
   intentMap.set('Set power', power.setPower);
   intentMap.set('Get power', power.getPower);
   agent.handleRequest(intentMap);

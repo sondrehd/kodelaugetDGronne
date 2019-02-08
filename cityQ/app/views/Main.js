@@ -9,16 +9,20 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { connect } from "react-redux";
-import MapView from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 
 import colors from "../style/colors";
 import BottomNavBar from "../components/BottomNavBar";
 
 function mapStateToProps(state) {
-  return {};
+  return {
+    appData: state.appData,
+  };
 }
 
-type Props = {};
+type Props = {
+  appData: Object,
+};
 
 class Main extends Component<Props> {
   static navigationOptions = {
@@ -26,6 +30,7 @@ class Main extends Component<Props> {
   };
 
   render() {
+    console.log(this.props.appData);
     return (
       <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.container}>
@@ -39,17 +44,26 @@ class Main extends Component<Props> {
             }}>
             <Text style={{ color: "white" }}>Søk etter hentested</Text>
           </View>
-          <MapView
-            style={{ height: "92%", width: "100%" }}
-            initialRegion={{
-              latitude: 37.78825,
-              longitude: -122.4324,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-          />
+          {this.props.appData && this.props.appData.stations && (
+            <MapView
+              style={{ height: "92%", width: "100%" }}
+              initialRegion={{
+                latitude: 54.1121,
+                longitude: 10.13321,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}>
+              {this.props.appData.stations.map(station => (
+                <Marker
+                  coordinate={station.coordinates}
+                  // title={station.title}
+                  // description={station.description}
+                />
+              ))}
+            </MapView>
+          )}
+          <BottomNavBar />
         </View>
-        <BottomNavBar />
       </SafeAreaView>
     );
   }
@@ -58,7 +72,7 @@ class Main extends Component<Props> {
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: colors.black,
   },
   container: {
     flex: 1,

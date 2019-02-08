@@ -44,7 +44,7 @@ class Login extends Component<Props> {
             </View>
             <TouchableOpacity
               style={{ ...styles.Button, backgroundColor: colors.googleRed }}
-              onPress={() => console.log("logging in with google")}
+              onPress={() => this.props.navigation.navigate('Main')}
             >
               <View style={styles.ButtonView}>
                 <Google style={styles.ButtonLogo} />
