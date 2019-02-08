@@ -5,4 +5,6 @@ export default {
   facebookBlue: "#3b5998",
   googleRed: "#db3236",
   almostBlack: "#1E2429",
+  blackGreen: "#1F484B",
+  green: "#025F5C",
 };
