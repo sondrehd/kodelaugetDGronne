@@ -38,25 +38,75 @@ app.post('/googleHome', function(request, response){
   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
   console.log('---');
 
+  function getAssistanceLevel() {
+    console.log('getting assistance level');
+    return new Promise((resolve) => {
+      dbHelper.getValues((rows) => {
+        res = rows[0]['assistancelevel'];
+        console.log('db assistance level: ' + res);
+        resolve(res);
+      }, 'level')
+    })
+  }
+
   function setAssistance(agent) {
     const level = agent.parameters.assistanceLevel;
-    return new Promise((resolve) => {
-      console.log('start update');
-      dbHelper.updateValue(() => {
-        agent.add('Your assistance level is updated to ' + level);
-        console.log('Your assistance level is updated to ' + level);
-        resolve();
-      }, 'level', "assistancelevel='" + level + "'", 'id=1');
-    })
+    
+    if (level.includes('down')) {
+      // get current
+      // update slower (if not on null or low)
+    }
+    else if (level.includes('up')) {
+      console.log('up');
+      let firstPromise = getAssistanceLevel();
+      console.log('up1');
+      agent.add('up1');
+
+      return new Promise((resolve) => {
+        firstPromise.then((level) => {
+          console.log('up2 ' + level);
+          agent.add('success ' + level);
+          resolve();
+        })
+      })
+      //   console.log('currentLevel is ' + currentLevel);
+      //   if (level == 'null' || level == null ) {
+      //     console.log('assistance level is null, turning up to low');
+      //     setAssistanceLevel('low');
+      //     resolve();
+      //   }
+      //   else if (level.includes('low')) {
+          
+      //   }
+      //   else if (level.includes('medium')) {
+          
+      //   }
+      //   else if (level.includes('high')) {
+          
+      //   }
+      // })
+    }
+
+    // return new Promise((resolve) => {
+    //   console.log('start update');
+    //   dbHelper.updateValue(() => {
+    //     console.log(level);
+    //     if (level.includes('null')) agent.add('Your assistance is turned off');
+    //     else agent.add('Your assistance level is updated to ' + level);
+    //     console.log('Your assistance level is updated to ' + level);
+    //     resolve();
+    //   }, 'level', "assistancelevel='" + level + "'", 'id=1');
+    // })
   }
 
   function getAssistance(agent) {
     return new Promise((resolve) => {
-      let output = 'Your assistance level is ';
+      // use help function instead
       dbHelper.getValues((rows) => {
         console.log(rows);
-        output += rows[0]['assistancelevel'];
-        agent.add(output);
+        res = rows[0]['assistancelevel'];
+        if (res === null || res === 'null') agent.add('Your assistance is stopped')
+        else agent.add('Your assistance level is ' + res);
         resolve();
       }, 'level')
     })
