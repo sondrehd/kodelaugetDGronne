@@ -20,6 +20,37 @@ function setPowerLevel(level) {
     })
 }
 
+function handlePowerDown(agent, levels, currentIndex) {
+    return new Promise((resolve) => {
+        let newLevelIndex = currentIndex-1;
+        if (newLevelIndex < 0) {
+            agent.add('Power is already turned off')
+            resolve();
+        }
+        else {
+            let newLevel = levels[newLevelIndex];
+            if (newLevel === 'off') agent.add('Turning power off');
+            else agent.add('Turning power down to ' + newLevel);
+            setPowerLevel(newLevel).then(() => resolve()) 
+        }
+    })
+}
+
+function handlePowerUp(agent, levels, currentLevel) {
+    return new Promise((resolve) => {
+        if (currentLevel === 'high') {
+            agent.add('Sorry, you can not get more bike assistance. Power is already high');
+            resolve();
+        }
+        else {
+            let newLevel = levels[levels.indexOf(currentLevel)+1]
+            console.log('new level: ' + newLevel);
+            agent.add('Turning power level up to ' + newLevel);
+            setPowerLevel(newLevel).then(() => resolve());
+        }
+    })
+}
+
 function setPower(agent) {
     return new Promise((resolve) => {
         const level = agent.parameters.powerLevel;
@@ -32,35 +63,15 @@ function setPower(agent) {
             agent.add('Error reading power level from database');
             resolve();
         }
-        // Index is valid
         if (level === 'down') {
-            let newLevelIndex = i-1;
-            if (newLevelIndex < 0) {
-            agent.add('Power is already turned off')
-            resolve();
-            }
-            else {
-            let newLevel = levels[newLevelIndex];
-            if (newLevel === 'off') agent.add('Turning power off');
-            else agent.add('Turning power down to ' + newLevel);
-            setPowerLevel(newLevel).then(() => resolve()) 
-            }
+            handlePowerDown(agent, levels, i).then(() => resolve());
         }
         else if (level === 'up') {
-            console.log('up');
-            if (currentLevel === 'high') {
-            agent.add('Sorry, you can not get more bike assistance. Power is already high');
-            resolve();
-            }
-            else {
-            let newLevel = levels[levels.indexOf(currentLevel)+1]
-            console.log('new level: ' + newLevel);
-            agent.add('Turning power level up to ' + newLevel);
-            setPowerLevel(newLevel).then(() => resolve());
-            }
+            handlePowerUp(agent, levels, currentLevel).then(() => resolve());
         }
         else if (currentLevel === level) {
-            agent.add('Power level is already set to ' + level);
+            if (currentLevel === 'off') agent.add('Your power is already turned off');
+            else agent.add('Power level is already set to ' + level);
             resolve();
         }
         else {
@@ -77,14 +88,11 @@ function setPower(agent) {
 
 function getPower(agent) {
     return new Promise((resolve) => {
-        // use help function instead
-        dbHelper.getValues((rows) => {
-        console.log(rows);
-        res = rows[0]['powerlevel'];
-        if (res === 'off') agent.add('Your power is stopped')
-        else agent.add('Your power level is ' + res);
-        resolve();
-        }, 'level')
+        getPowerLevel().then((currentLevel) => {
+            if (currentLevel === 'off') agent.add('Your power is stopped')
+            else agent.add('Your power level is ' + currentLevel);
+            resolve();
+        });
     })
 }
 
