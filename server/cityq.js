@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const { WebhookClient } = require('dialogflow-fulfillment');
 const dbHelper = require('./db-helper');
 const power = require('./power-level');
+const navigation = require('./navigation');
 
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/hawkon.eu/privkey.pem', 'utf8');
@@ -72,6 +73,9 @@ app.post('/googleHome', function(request, response){
   console.log('intentmap is set up');
   intentMap.set('Get speed', getSpeed);
   intentMap.set('Get battery', getBattery);
+
+  intentMap.set('Nav - Start and stop', navigation.startStop);
+  intentMap.set('Nav - Time left', navigation.timeLeft);
 
   intentMap.set('Set power', power.setPower);
   intentMap.set('Get power', power.getPower);
