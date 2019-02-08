@@ -12,7 +12,7 @@ const LockIcon = props => (
     </Defs>
     <G fill="none" transform="translate(-32 -15)">
       <Use fill="#000" filter="url(#prefix__a)" xlinkHref="#prefix__b" />
-      <Use fill="#DADBDC" xlinkHref="#prefix__b" />
+      <Use fill={props.fill} xlinkHref="#prefix__b" />
     </G>
   </Svg>
 )

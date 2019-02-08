@@ -17,6 +17,7 @@ import {
     setStationModalVisible,
     setSelectedStation,
 } from "../redux/actions/UIState";
+import { setAppDataBackend, setLevel, setLight, setLock } from '../redux/actions/appData'
 import colors from "../style/colors";
 import BottomNavBar from "../components/BottomNavBar";
 import StationModal from "../components/StationModal";
@@ -40,6 +41,10 @@ function mapDispatchToProps(dispatch) {
         setModalVisible: value => dispatch(setStationModalVisible(value)),
         setDestination: destination => dispatch(setDestination(destination)),
         setRemaining: (time, distance) => dispatch(setRemaining(time, distance)),
+        setAppDataBackend: (level, battery, speed, lock, light) => dispatch(setAppDataBackend(level, battery, speed, lock, light)),
+        setLevel: (level) => dispatch(setLevel(level)),
+        setLight: (light) => dispatch(setLight(light)),
+        setLock: (lock) => dispatch(setLock(lock)),
     };
 }
 type Props = {
@@ -56,6 +61,15 @@ class Main extends Component<Props> {
         this.socket = SocketIOClient("https://hawkon.eu:443/");
         this.socket.emit("message", "Hi server");
         this.socket.on("message", data => {
+            if (typeof data.level !== 'undefined' && typeof data.battery !== 'undefined' && typeof data.speed !== 'undefined' && typeof data.lock !== 'undefined' && typeof data.light !== 'undefined') {
+                this.props.setAppDataBackend(data.level, data.battery, data.speed, data.lock, data.light)
+            } else if (typeof data.level !== 'undefined') {
+                this.props.setLevel(data.level);
+            } else if (typeof data.light !== 'undefined') {
+                this.props.setLight(data.light);
+            } else if (typeof data.lock !== 'undefined') {
+                this.props.setLock(data.lock);
+            }
             console.log("Data recieved from server", data);
         });
     }
@@ -93,13 +107,13 @@ class Main extends Component<Props> {
                                 justifyContent: "space-around",
                             }}>
                             <View style={{ height: '100%', justifyContent: 'center', flex: 1, alignContent: 'center', borderRightWidth: 3, borderColor: 'black' }}>
-                                <LightIcon style={{ alignSelf: 'center' }} />
+                                <LightIcon style={{ alignSelf: 'center' }} fill={this.props.appData.light ? 'yellow' : 'lightgray'} />
                             </View>
                             <View style={{ height: '100%', justifyContent: 'center', flex: 2, alignContent: 'center' }}>
-                                <PowerIcon style={{ alignSelf: 'center' }} />
+                                <PowerIcon style={{ alignSelf: 'center' }} fill={this.props.appData.level === 'off' ? 'lightgray' : this.props.appData.level === 'eco' ? 'green' : this.props.appData.level === 'normal' ? 'yellow' : 'red'} />
                             </View>
                             <View style={{ height: '100%', justifyContent: 'center', flex: 1, alignContent: 'center', borderLeftWidth: 3, borderColor: 'black' }}>
-                                <LockIcon style={{ alignSelf: 'center' }} />
+                                <LockIcon style={{ alignSelf: 'center' }} fill={this.props.appData.lock ? 'red' : 'green'} />
                             </View>
                         </View>
                     }
