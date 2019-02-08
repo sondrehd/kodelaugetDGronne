@@ -6,6 +6,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const { WebhookClient } = require('dialogflow-fulfillment');
 const dbHelper = require('./db-helper');
+const power = require('./power-level');
 
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/hawkon.eu/privkey.pem', 'utf8');
@@ -38,35 +39,6 @@ app.post('/googleHome', function(request, response){
   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
   console.log('---');
 
-  function setAssistance(agent) {
-    const level = agent.parameters.assistanceLevel;
-    return new Promise((resolve) => {
-      console.log('start update');
-      dbHelper.updateValue(() => {
-        agent.add('Your assistance level is updated to ' + level);
-        console.log('Your assistance level is updated to ' + level);
-        resolve();
-      }, 'level', "assistancelevel='" + level + "'", 'id=1');
-    })
-  }
-
-  function getAssistance(agent) {
-    const level = agent.parameters.assistanceLevel;
-    if (level === undefined) {
-      agent.add('Assistance level is not defined');
-      return
-    }
-    return new Promise((resolve) => {
-      let output = 'Your assistance level is ';
-      dbHelper.getValues((rows) => {
-        console.log(rows);
-        output += rows[0]['assistancelevel'];
-        agent.add(output);
-        resolve();
-      }, 'level')
-    })
-  }
-
   function getSpeed(agent) {
     return new Promise((resolve) => {
       let output = 'Your speed is ';
@@ -85,8 +57,8 @@ app.post('/googleHome', function(request, response){
   let intentMap = new Map();
   console.log('intentmap is set up');
   intentMap.set('Get speed', getSpeed);
-  intentMap.set('Set assistance', setAssistance);
-  intentMap.set('Get assistance', getAssistance);
+  intentMap.set('Set power', power.setPower);
+  intentMap.set('Get power', power.getPower);
   agent.handleRequest(intentMap);
   // if (accessController.isAuthorized(req.body.originalRequest.data.user.userId)) {
   //   intentToActionMapper.mapIntentToAction(req.body.result.metadata.intentName, req.body.result.parameters, socket);
