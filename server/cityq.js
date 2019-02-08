@@ -9,6 +9,7 @@ const dbHelper = require('./db-helper');
 const power = require('./power-level');
 const navigation = require('./navigation');
 const onOffComponents = require('./on-off-components');
+const getComponents = require('./get-components');
 
 const socketio = require('socket.io');
 
@@ -38,8 +39,31 @@ io.sockets.on('connection', function (newSocket) {
   power.setSocket(socket);
   navigation.setSocket(socket);
   onOffComponents.setSocket(socket);
-  socket.emit('message', { level: 'high', battery: 21, speed: 32.1, lock: true, light: false });
-  socket.on('message', (message) => handleSocketMessage(message));
+
+  let levelPromise = power.getPowerLevel();
+  let lockPromise = onOffComponents.getLockValue();
+  let lightPromise = onOffComponents.getLightValue();
+  let speedPromise = getComponents.getSpeed();
+  let batteryPromise = getComponents.getBattery();
+
+  Promise.all([levelPromise, batteryPromise, speedPromise, lockPromise, lightPromise]).then(function(values) {
+    console.log(values);
+    let socketObject = { 
+      level: values[0], 
+      battery: values[1], 
+      speed: values[2], 
+      lock: values[3], 
+      light: values[4]
+    };
+
+    console.log('------');
+    console.log('Socket object: ');
+    console.log(socketObject);
+    console.log('------');
+
+    socket.emit('message', socketObject);
+    socket.on('message', (message) => handleSocketMessage(message));
+  });
 });
 
 function handleSocketMessage(message) {
@@ -60,39 +84,11 @@ app.post('/googleHome', function (request, response) {
   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
   console.log('---');
 
-  function getSpeed(agent) {
-    return new Promise((resolve) => {
-      let output = 'Your speed is ';
-      dbHelper.getValues((rows) => {
-        let latest = rows[0];
-        console.log(rows);
-        output += latest['speed'];
-        output += ' kilometre per hour';
-        agent.add(output);
-        resolve();
-      }, 'speed')
-    })
-  }
-
-  function getBattery(agent) {
-    return new Promise((resolve) => {
-      let output = 'Your battery level is ';
-      dbHelper.getValues((rows) => {
-        console.log(rows);
-        let batteryPercent = rows[0]['batterylevel'];
-        output += batteryPercent;
-        output += ' percent';
-        agent.add(output);
-        resolve();
-      }, 'battery')
-    })
-  }
-
   // Map triggered intents to functions
   let intentMap = new Map();
   console.log('intentmap is set up');
-  intentMap.set('Get speed', getSpeed);
-  intentMap.set('Get battery', getBattery);
+  intentMap.set('Get speed', getComponents.getSpeed);
+  intentMap.set('Get battery', getComponents.getBattery);
 
   intentMap.set('Nav - Start and stop', navigation.startStop);
   intentMap.set('Nav - Time left', navigation.timeLeft);

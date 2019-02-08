@@ -15,6 +15,14 @@ function getOnOff(table) {
     })
 }
 
+function getLightValue() {
+    return getOnOff('light');
+}
+
+function getLockValue() {
+    return getOnOff('lock');
+}
+
 function setOnOff(isOn, table) {
     return new Promise((resolve) => {
         dbHelper.updateValue(() => {
@@ -76,5 +84,7 @@ function lockOnOff(agent) {
 module.exports = {
     lightOnOff,
     lockOnOff,
-    setSocket
+    setSocket,
+    getLightValue,
+    getLockValue
 }

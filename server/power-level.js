@@ -108,7 +108,8 @@ function getPower(agent) {
 
 module.exports = {
     getPower,
+    getPowerLevel,
     setPower,
-    setSocket
+    setSocket,
 }
 
