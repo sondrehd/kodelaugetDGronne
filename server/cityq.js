@@ -38,7 +38,7 @@ io.sockets.on('connection', function (newSocket) {
   power.setSocket(socket);
   navigation.setSocket(socket);
   onOffComponents.setSocket(socket);
-  socket.emit('message', 'Hi client');
+  socket.emit('message', { level: 'high', battery: 21, speed: 32.1, lock: true, light: false });
   socket.on('message', (message) => handleSocketMessage(message));
 });
 
