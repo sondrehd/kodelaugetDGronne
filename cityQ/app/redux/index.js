@@ -19,7 +19,8 @@ const persistConfig = {
   storage,
   stateReconciler: autoMergeLevel2,
   blacklist: [
-    'appState'
+    'appState',
+    'appData'
   ]
   // transforms: [locationBlacklist]
 };
