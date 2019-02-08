@@ -1,7 +1,8 @@
 export default {
-  blue: '#2697FB',
-  white: '#FFFFFF',
-  black: '#12181e',
-  facebookBlue: '#3b5998',
-  googleRed: '#db3236',
+  blue: "#2697FB",
+  white: "#FFFFFF",
+  black: "#12181e",
+  facebookBlue: "#3b5998",
+  googleRed: "#db3236",
+  almostBlack: "#1E2429",
 };

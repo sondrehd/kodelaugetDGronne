@@ -1,40 +1,34 @@
 // @flow
 
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   SafeAreaView,
   StyleSheet,
   View,
   Text,
-  TouchableOpacity
-} from 'react-native';
-import { connect } from 'react-redux';
+  TouchableOpacity,
+} from "react-native";
+import { connect } from "react-redux";
 
-import colors from '../style/colors';
+import colors from "../style/colors";
+import BottomNavBar from "../components/BottomNavBar";
 
 function mapStateToProps(state) {
-  return {
-    
-  };
+  return {};
 }
 
-type Props = {
-  
-};
+type Props = {};
 
 class Main extends Component<Props> {
-  
+  static navigationOptions = {
+    header: null,
+  };
   render() {
     return (
-      <SafeAreaView
-        style={
-          styles.safeAreaView
-          }
-      >
+      <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.container}>
-          <Text>
-              Main
-          </Text>
+          <Text>Main</Text>
+          <BottomNavBar />
         </View>
       </SafeAreaView>
     );
@@ -44,40 +38,42 @@ class Main extends Component<Props> {
 const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)'
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    height: "100%",
   },
   container: {
+    height: "100%",
     flex: 1,
     opacity: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white'
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "white",
   },
   header: {
     marginTop: 80,
-    marginBottom: 80
+    marginBottom: 80,
   },
   headerText: {
-    fontFamily: 'Avenir',
-    fontSize: 20
+    fontFamily: "Avenir",
+    fontSize: 20,
   },
   tilesContainer: {
     flex: 1,
-    alignItems: 'center',
-    flexDirection: 'column',
-    alignItems: 'flex-start'
+    alignItems: "center",
+    flexDirection: "column",
+    alignItems: "flex-start",
   },
   tileRow: {
-    flexDirection: 'row'
+    flexDirection: "row",
   },
   scheduleButtonRow: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginLeft: 7,
-    marginRight: 7
-  }
+    marginRight: 7,
+  },
 });
 
 export default connect(mapStateToProps)(Main);
