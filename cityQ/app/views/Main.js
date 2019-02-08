@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { connect } from "react-redux";
+import MapView from "react-native-maps";
 
 import colors from "../style/colors";
 import BottomNavBar from "../components/BottomNavBar";
@@ -23,13 +24,32 @@ class Main extends Component<Props> {
   static navigationOptions = {
     header: null,
   };
+
   render() {
     return (
       <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.container}>
-          <Text>Main</Text>
-          <BottomNavBar />
+          <View
+            style={{
+              height: "8%",
+              width: "100%",
+              backgroundColor: colors.black,
+              justifyContent: "center",
+              paddingLeft: 30,
+            }}>
+            <Text style={{ color: "white" }}>Søk etter hentested</Text>
+          </View>
+          <MapView
+            style={{ height: "92%", width: "100%" }}
+            initialRegion={{
+              latitude: 37.78825,
+              longitude: -122.4324,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+          />
         </View>
+        <BottomNavBar />
       </SafeAreaView>
     );
   }
@@ -39,13 +59,11 @@ const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.4)",
-    height: "100%",
   },
   container: {
-    height: "100%",
     flex: 1,
     opacity: 1,
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
   },
