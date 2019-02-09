@@ -36,12 +36,12 @@ export default function appDataReducer(
     case 'SET_LOCK':
       return {
         ...state,
-        level: action.lock,
+        lock: action.lock,
       }
     case 'SET_LIGHT':
       return {
         ...state,
-        level: action.light,
+        light: action.light,
       }
     default:
       return state;
