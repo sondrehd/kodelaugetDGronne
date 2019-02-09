@@ -506,7 +506,7 @@ class Main extends Component<Props> {
                       onReady={result => {
                         this.props.setRemaining(
                           result.duration,
-                          result.distance,
+                          result.distance * 1000,
                         );
                         console.log(result.distance + " km");
                         console.log(result.duration + " min");
@@ -592,11 +592,13 @@ class Main extends Component<Props> {
                 style={{ flexDirection: "column", justifyContent: "center" }}>
                 <Text
                   style={{ color: "white", fontSize: 15, textAlign: "center" }}>
-                  {Math.round(this.props.nav.distanceRemaining * 1000)}
+                  {this.props.nav.distanceRemaining < 1000
+                    ? Math.round(this.props.nav.distanceRemaining)
+                    : Math.round(this.props.nav.distanceRemaining / 1000, 2)}
                 </Text>
                 <Text
                   style={{ color: "white", fontSize: 15, textAlign: "center" }}>
-                  m
+                  {this.props.nav.distanceRemaining < 1000 ? "m" : "km"}
                 </Text>
               </View>
             </View>
