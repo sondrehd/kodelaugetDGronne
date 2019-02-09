@@ -8,11 +8,15 @@ import UserAccount from "../icons/UserAccount";
 import CityQNoText from "../icons/CityQNoText";
 import Gps from "../icons/Gps";
 
-import { setNavigationMode, setShowLevelMenu, setDrivingMode } from "../redux/actions/UIState";
+import {
+  setNavigationMode,
+  setShowLevelMenu,
+  setDrivingMode
+} from "../redux/actions/UIState";
 
 function mapStateToProps(state) {
   return {
-    UIState: state.UIState,
+    UIState: state.UIState
   };
 }
 function mapDispatchToProps(dispatch) {
@@ -26,7 +30,8 @@ class BottomNavBar extends Component<Props> {
   render() {
     return (
       <View style={styles.Container}>
-        <TouchableOpacity style={{ ...styles.Cell, flexBasis: "25%" }}
+        <TouchableOpacity
+          style={{ ...styles.Cell, flexBasis: "25%" }}
           onPress={() => {
             this.props.setNavigationMode(false);
             this.props.setShowLevelMenu(false);
@@ -36,7 +41,7 @@ class BottomNavBar extends Component<Props> {
           <Gps
             fill={
               this.props.UIState.navigationMode &&
-                !this.props.UIState.userProfileMode
+              !this.props.UIState.userProfileMode
                 ? "gray"
                 : "cyan"
             }
@@ -49,13 +54,14 @@ class BottomNavBar extends Component<Props> {
             borderLeftWidth: 2,
             borderRightWidth: 2,
             borderColor: colors.black,
-            flexBasis: "50%",
-          }}>
+            flexBasis: "50%"
+          }}
+        >
           {console.log("[sondre]", this.props.UIState.navigationMode)}
           <CityQNoText
             fill={
               this.props.UIState.navigationMode &&
-                !this.props.UIState.userProfileMode
+              !this.props.UIState.userProfileMode
                 ? "cyan"
                 : "gray"
             }
@@ -71,7 +77,7 @@ class BottomNavBar extends Component<Props> {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(BottomNavBar);
 
 const styles = {
@@ -79,10 +85,10 @@ const styles = {
     flexDirection: "row",
     width: "100%",
     backgroundColor: colors.almostBlack,
-    flexBasis: 60,
+    flexBasis: 60
   },
   Cell: {
     justifyContent: "center",
-    alignItems: "center",
-  },
+    alignItems: "center"
+  }
 };
