@@ -300,7 +300,7 @@ class Main extends Component<Props> {
               style={{
                 position: "absolute",
                 zIndex: 5,
-                top: 20,
+                top: 40,
                 width: "100%",
                 backgroundColor: colors.black,
               }}>
