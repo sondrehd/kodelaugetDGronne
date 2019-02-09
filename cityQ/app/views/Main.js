@@ -16,6 +16,7 @@ import { setRemaining, setDestination } from "../redux/actions/nav";
 import {
   setStationModalVisible,
   setSelectedStation,
+  setDrivingMode,
 } from "../redux/actions/UIState";
 import {
   setAppDataBackend,
@@ -45,6 +46,7 @@ function mapDispatchToProps(dispatch) {
   return {
     setSelectedStation: id => dispatch(setSelectedStation(id)),
     setModalVisible: value => dispatch(setStationModalVisible(value)),
+    setDrivingMode: bool => dispatch(setDrivingMode(bool)),
     setDestination: destination => dispatch(setDestination(destination)),
     setRemaining: (time, distance) => dispatch(setRemaining(time, distance)),
     setAppDataBackend: (level, battery, speed, lock, light) =>
@@ -96,6 +98,14 @@ class Main extends Component<Props> {
   render() {
     const origin = { latitude: 59.9229977, longitude: 10.7535 };
     const GOOGLE_MAPS_APIKEY = "AIzaSyAb5Q4SBx-bfwZZuyep8e5BrEPHzmdICpY";
+
+    let arrivalTime = new Date(
+      new Date().getTime() + this.props.nav.timeRemaining * 60000,
+    );
+    let arrivalText = arrivalTime
+      .toTimeString()
+      .split(" ")[0]
+      .substring(0, 5);
 
     return (
       <SafeAreaView style={styles.safeAreaView}>
@@ -170,7 +180,7 @@ class Main extends Component<Props> {
                 }}>
                 <LockIcon
                   style={{ alignSelf: "center" }}
-                  fill={this.props.appData.lock ? "red" : "green"}
+                  fill={this.props.appData.lock ? "lightgray" : "green"}
                 />
               </View>
             </View>
@@ -220,7 +230,7 @@ class Main extends Component<Props> {
                   destination={this.props.nav.destination}
                   apikey={GOOGLE_MAPS_APIKEY}
                   strokeWidth={3}
-                  strokeColor={colors.black}
+                  strokeColor={colors.navGreen}
                   optimizeWaypoints={true}
                   onReady={result => {
                     this.props.setRemaining(result.duration, result.distance);
@@ -237,6 +247,72 @@ class Main extends Component<Props> {
               speed={this.props.appData.speed}
               batteryLevel={this.props.appData.battery}
             />
+          )}
+          {this.props.UIState.navigationMode &&
+            !this.props.UIState.drivingMode && (
+              <TouchableOpacity
+                onPress={() => this.props.setDrivingMode(true)}
+                style={{
+                  position: "absolute",
+                  justifyContent: "center",
+                  bottom: 45,
+                  height: 50,
+                  width: 170,
+                  backgroundColor: colors.navGreen,
+                  borderRadius: 30,
+                }}>
+                <Text
+                  style={{ color: "white", fontSize: 25, textAlign: "center" }}>
+                  START
+                </Text>
+              </TouchableOpacity>
+            )}
+          {this.props.UIState.navigationMode && this.props.UIState.drivingMode && (
+            <View
+              style={{
+                position: "absolute",
+                flexDirection: "row",
+                justifyContent: "space-around",
+                bottom: 45,
+                height: 50,
+                width: 170,
+                backgroundColor: colors.black,
+                borderRadius: 30,
+              }}>
+              <View
+                style={{ flexDirection: "column", justifyContent: "center" }}>
+                <Text
+                  style={{ color: "white", fontSize: 15, textAlign: "center" }}>
+                  {this.props.nav.timeRemaining}
+                </Text>
+                <Text
+                  style={{ color: "white", fontSize: 15, textAlign: "center" }}>
+                  min
+                </Text>
+              </View>
+              <View
+                style={{ flexDirection: "column", justifyContent: "center" }}>
+                <Text
+                  style={{ color: "white", fontSize: 15, textAlign: "center" }}>
+                  {arrivalText}
+                </Text>
+                <Text
+                  style={{ color: "white", fontSize: 15, textAlign: "center" }}>
+                  arrival
+                </Text>
+              </View>
+              <View
+                style={{ flexDirection: "column", justifyContent: "center" }}>
+                <Text
+                  style={{ color: "white", fontSize: 15, textAlign: "center" }}>
+                  {this.props.nav.distanceRemaining * 1000}
+                </Text>
+                <Text
+                  style={{ color: "white", fontSize: 15, textAlign: "center" }}>
+                  m
+                </Text>
+              </View>
+            </View>
           )}
           <BottomNavBar />
         </View>
