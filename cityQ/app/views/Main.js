@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   Dimensions,
+  Image,
 } from "react-native";
 import { mapStyle } from "../style/mapStyle";
 import { connect } from "react-redux";
@@ -170,7 +171,7 @@ class Main extends Component<Props> {
                 alignItems: "center",
                 backgroundColor: colors.black,
                 flexDirection: "row",
-                height: 40,
+                height: 60,
                 width: "100%",
                 justifyContent: "space-around",
               }}>
@@ -212,7 +213,7 @@ class Main extends Component<Props> {
                     this.props.appData.level === "off"
                       ? "lightgray"
                       : this.props.appData.level === "eco"
-                      ? "green"
+                      ? colors.iconGreen
                       : this.props.appData.level === "normal"
                       ? "yellow"
                       : "red"
@@ -236,11 +237,64 @@ class Main extends Component<Props> {
                 }}>
                 <LockIcon
                   style={{ alignSelf: "center" }}
-                  fill={this.props.appData.lock ? "lightgray" : "green"}
+                  fill={this.props.appData.lock ? "lightblue" : "lightgray"}
                 />
               </TouchableOpacity>
             </View>
           )}
+          {this.props.UIState.navigationMode &&
+            !this.props.UIState.drivingMode && (
+              <View
+                style={{
+                  position: "absolute",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  zIndex: 5,
+                  width: "100%",
+                  top: 50,
+                }}>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.setDestination({
+                      latitude: 59.934234229977,
+                      longitude: 10.7422535,
+                    })
+                  }>
+                  <View
+                    style={{
+                      backgroundColor: colors.navGreen,
+                      height: 30,
+                      width: 80,
+                      borderRadius: 40,
+                      justifyContent: "center",
+                    }}>
+                    <Text style={{ textAlign: "center", color: "white" }}>
+                      HOME
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.setDestination({
+                      latitude: 59.984234229977,
+                      longitude: 10.7222535,
+                    })
+                  }>
+                  <View
+                    style={{
+                      backgroundColor: colors.navGreen,
+                      height: 30,
+                      width: 80,
+                      borderRadius: 40,
+                      justifyContent: "center",
+                    }}>
+                    <Text style={{ textAlign: "center", color: "white" }}>
+                      WORK
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
           {this.props.UIState.showLevelMenu && (
             <View
               style={{
@@ -312,7 +366,7 @@ class Main extends Component<Props> {
                   </Text>
                   <View
                     style={{
-                      backgroundColor: "green",
+                      backgroundColor: colors.iconGreen,
                       height: 15,
                       width: 15,
                       borderRadius: 10,
@@ -392,65 +446,86 @@ class Main extends Component<Props> {
               </TouchableOpacity>
             </View>
           )}
-          {this.props.appData && this.props.appData.stations && (
-            <MapView
-              ref={c => (this.mapView = c)}
-              customMapStyle={mapStyle}
-              provider={PROVIDER_GOOGLE}
-              style={{
-                height: Dimensions.get("window").height - 140,
-                width: "100%",
-              }}
-              initialRegion={{
-                latitude: 59.9229977,
-                longitude: 10.7535,
-                latitudeDelta: 0.03,
-                longitudeDelta: 0.01,
-              }}
-              showsUserLocation={true}>
-              {this.props.appData.stations.map(station => (
-                <Marker
-                  key={station.title}
-                  coordinate={station.coordinates}
-                  onPress={() => {
-                    this.props.setSelectedStation(station.title);
-                    this.props.setModalVisible(true);
-                  }}
-                  title={station.title}
-                  // description={station.description}
-                >
-                  <View
-                    style={{
-                      height: 40,
-                      width: 40,
-                      backgroundColor: colors.black,
-                      borderRadius: 50,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}>
-                    <Text style={{ color: "white", fontSize: 22 }}>
-                      {station.available}
-                    </Text>
-                  </View>
-                </Marker>
-              ))}
-              {this.props.nav.destination && this.props.UIState.navigationMode && (
-                <MapViewDirections
-                  origin={origin}
-                  destination={this.props.nav.destination}
-                  apikey={GOOGLE_MAPS_APIKEY}
-                  strokeWidth={3}
-                  strokeColor={colors.navGreen}
-                  optimizeWaypoints={true}
-                  onReady={result => {
-                    this.props.setRemaining(result.duration, result.distance);
-                    console.log(result.distance + " km");
-                    console.log(result.duration + " min");
-                  }}
-                />
-              )}
-            </MapView>
-          )}
+          {this.props.appData &&
+            this.props.appData.stations &&
+            !this.props.UIState.drivingMode && (
+              <MapView
+                onPress={coords => {
+                  console.log(coords);
+                  this.props.setDestination(coords.nativeEvent.coordinate);
+                }}
+                ref={c => (this.mapView = c)}
+                customMapStyle={mapStyle}
+                provider={PROVIDER_GOOGLE}
+                style={{
+                  height: Dimensions.get("window").height - 160,
+                  width: "100%",
+                }}
+                initialRegion={{
+                  latitude: 59.9229977,
+                  longitude: 10.7535,
+                  latitudeDelta: 0.03,
+                  longitudeDelta: 0.01,
+                }}
+                showsUserLocation={true}>
+                {this.props.appData.stations.map(station => (
+                  <Marker
+                    key={station.title}
+                    coordinate={station.coordinates}
+                    onPress={() => {
+                      this.props.setSelectedStation(station.title);
+                      this.props.setModalVisible(true);
+                    }}
+                    title={station.title}
+                    // description={station.description}
+                  >
+                    <View
+                      style={{
+                        height: 40,
+                        width: 40,
+                        backgroundColor: colors.black,
+                        borderRadius: 50,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}>
+                      <Text style={{ color: "white", fontSize: 22 }}>
+                        {station.available}
+                      </Text>
+                    </View>
+                  </Marker>
+                ))}
+                {this.props.nav.destination &&
+                  this.props.UIState.navigationMode && (
+                    <MapViewDirections
+                      origin={origin}
+                      destination={this.props.nav.destination}
+                      apikey={GOOGLE_MAPS_APIKEY}
+                      strokeWidth={3}
+                      strokeColor={colors.navGreen}
+                      optimizeWaypoints={true}
+                      onReady={result => {
+                        this.props.setRemaining(
+                          result.duration,
+                          result.distance,
+                        );
+                        console.log(result.distance + " km");
+                        console.log(result.duration + " min");
+                      }}
+                    />
+                  )}
+              </MapView>
+            )}
+          {this.props.appData &&
+            this.props.appData.stations &&
+            this.props.UIState.drivingMode && (
+              <Image
+                style={{
+                  width: "100%",
+                  height: Dimensions.get("window").height - 160,
+                }}
+                source={require("../images/Drive_map.png")}
+              />
+            )}
           {this.props.UIState.stationModalVisible && <StationModal />}
           {this.props.UIState.navigationMode && (
             <BottomPhysicalNavigationTab
@@ -467,7 +542,7 @@ class Main extends Component<Props> {
                 style={{
                   position: "absolute",
                   justifyContent: "center",
-                  bottom: 45,
+                  bottom: 55,
                   height: 50,
                   width: 170,
                   backgroundColor: colors.navGreen,
@@ -485,7 +560,7 @@ class Main extends Component<Props> {
                 position: "absolute",
                 flexDirection: "row",
                 justifyContent: "space-around",
-                bottom: 45,
+                bottom: 55,
                 height: 50,
                 width: 170,
                 backgroundColor: colors.black,
@@ -495,7 +570,7 @@ class Main extends Component<Props> {
                 style={{ flexDirection: "column", justifyContent: "center" }}>
                 <Text
                   style={{ color: "white", fontSize: 15, textAlign: "center" }}>
-                  {this.props.nav.timeRemaining}
+                  {Math.round(this.props.nav.timeRemaining)}
                 </Text>
                 <Text
                   style={{ color: "white", fontSize: 15, textAlign: "center" }}>
@@ -517,7 +592,7 @@ class Main extends Component<Props> {
                 style={{ flexDirection: "column", justifyContent: "center" }}>
                 <Text
                   style={{ color: "white", fontSize: 15, textAlign: "center" }}>
-                  {this.props.nav.distanceRemaining * 1000}
+                  {Math.round(this.props.nav.distanceRemaining * 1000)}
                 </Text>
                 <Text
                   style={{ color: "white", fontSize: 15, textAlign: "center" }}>

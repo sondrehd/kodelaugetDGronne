@@ -7,5 +7,6 @@ export default {
   almostBlack: "#1E2429",
   blackGreen: "#1F484B",
   green: "#025F5C",
-  navGreen: '#285956'
+  navGreen: "#285956",
+  iconGreen: "#8fe2b1",
 };

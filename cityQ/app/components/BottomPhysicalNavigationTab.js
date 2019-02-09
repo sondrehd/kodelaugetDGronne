@@ -7,7 +7,7 @@ const BottomPhysicalNavigationTab = props => {
   let speed = props.speed.toString() + " km/h";
   let batteryLevel = props.batteryLevel.toString() + "%";
   return (
-    <View style={{ position: "absolute", bottom: 30, left: 0, right: 0 }}>
+    <View style={{ position: "absolute", bottom: 40, left: 0, right: 0 }}>
       <BottomNavIcon
         style={{ position: "absolute", bottom: 0, left: 0, right: 0 }}
       />

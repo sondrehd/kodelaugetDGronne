@@ -11,19 +11,19 @@ import Gps from "../icons/Gps";
 import {
   setNavigationMode,
   setShowLevelMenu,
-  setDrivingMode
+  setDrivingMode,
 } from "../redux/actions/UIState";
 
 function mapStateToProps(state) {
   return {
-    UIState: state.UIState
+    UIState: state.UIState,
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
     setNavigationMode: bool => dispatch(setNavigationMode(bool)),
     setShowLevelMenu: bool => dispatch(setShowLevelMenu(bool)),
-    setDrivingMode: bool => dispatch(setDrivingMode(bool))
+    setDrivingMode: bool => dispatch(setDrivingMode(bool)),
   };
 }
 class BottomNavBar extends Component<Props> {
@@ -36,39 +36,39 @@ class BottomNavBar extends Component<Props> {
             this.props.setNavigationMode(false);
             this.props.setShowLevelMenu(false);
             this.props.setDrivingMode(false);
-          }}
-        >
+          }}>
           <Gps
             fill={
               this.props.UIState.navigationMode &&
               !this.props.UIState.userProfileMode
-                ? "gray"
-                : "cyan"
+                ? "lightgray"
+                : colors.iconGreen
             }
           />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => this.props.setNavigationMode(true)}
+          onPress={() => {
+            // this.props.setNavigationMode(true);
+          }}
           style={{
             ...styles.Cell,
             borderLeftWidth: 2,
             borderRightWidth: 2,
             borderColor: colors.black,
-            flexBasis: "50%"
-          }}
-        >
+            flexBasis: "50%",
+          }}>
           {console.log("[sondre]", this.props.UIState.navigationMode)}
           <CityQNoText
             fill={
               this.props.UIState.navigationMode &&
               !this.props.UIState.userProfileMode
-                ? "cyan"
+                ? colors.iconGreen
                 : "gray"
             }
           />
         </TouchableOpacity>
         <TouchableOpacity style={{ ...styles.Cell, flexBasis: "25%" }}>
-          <UserAccount fill={"gray"} />
+          <UserAccount fill={"lightgray"} />
         </TouchableOpacity>
       </View>
     );
@@ -77,7 +77,7 @@ class BottomNavBar extends Component<Props> {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(BottomNavBar);
 
 const styles = {
@@ -85,10 +85,10 @@ const styles = {
     flexDirection: "row",
     width: "100%",
     backgroundColor: colors.almostBlack,
-    flexBasis: 60
+    flexBasis: 60,
   },
   Cell: {
     justifyContent: "center",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 };
