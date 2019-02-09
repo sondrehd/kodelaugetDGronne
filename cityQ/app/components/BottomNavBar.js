@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
 
 import colors from "../style/colors";
@@ -24,17 +24,20 @@ class BottomNavBar extends Component<Props> {
   render() {
     return (
       <View style={styles.Container}>
-        <View style={{ ...styles.Cell, flexBasis: "25%" }}>
+        <TouchableOpacity style={{ ...styles.Cell, flexBasis: "25%" }}
+          onPress={() => this.props.setNavigationMode(false)}
+        >
           <Gps
             fill={
               this.props.UIState.navigationMode &&
-              !this.props.UIState.userProfileMode
+                !this.props.UIState.userProfileMode
                 ? "gray"
                 : "cyan"
             }
           />
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.props.setNavigationMode(true)}
           style={{
             ...styles.Cell,
             borderLeftWidth: 2,
@@ -46,15 +49,15 @@ class BottomNavBar extends Component<Props> {
           <CityQNoText
             fill={
               this.props.UIState.navigationMode &&
-              !this.props.UIState.userProfileMode
+                !this.props.UIState.userProfileMode
                 ? "cyan"
                 : "gray"
             }
           />
-        </View>
-        <View style={{ ...styles.Cell, flexBasis: "25%" }}>
+        </TouchableOpacity>
+        <TouchableOpacity style={{ ...styles.Cell, flexBasis: "25%" }}>
           <UserAccount fill={"gray"} />
-        </View>
+        </TouchableOpacity>
       </View>
     );
   }
