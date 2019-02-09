@@ -10,7 +10,6 @@ const power = require('./power-level');
 const navigation = require('./navigation');
 const onOffComponents = require('./on-off-components');
 const getComponents = require('./get-components');
-
 const socketio = require('socket.io');
 
 // Certificate
