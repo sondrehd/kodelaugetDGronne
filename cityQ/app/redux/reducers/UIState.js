@@ -3,6 +3,7 @@ import {
   SET_SELECTED_STATION,
   SET_NAVIGATION_MODE,
   SET_DRIVING_MODE,
+  SET_SHOW_LEVEL_MENU,
 } from "../actions/UIState";
 
 const initialState = {
@@ -10,7 +11,8 @@ const initialState = {
   selectedStationId: null,
   navigationMode: false,
   userProfileMode: false,
-  drivingMode: false
+  drivingMode: false,
+  showLevelMenu: false
 };
 
 export default (UIReducer = (state = initialState, action) => {
@@ -37,6 +39,12 @@ export default (UIReducer = (state = initialState, action) => {
       return {
         ...state,
         drivingMode: action.drivingMode,
+      };
+    }
+    case SET_SHOW_LEVEL_MENU: {
+      return {
+        ...state,
+        showLevelMenu: action.showLevelMenu,
       };
     }
     default: {

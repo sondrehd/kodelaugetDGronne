@@ -8,7 +8,7 @@ import UserAccount from "../icons/UserAccount";
 import CityQNoText from "../icons/CityQNoText";
 import Gps from "../icons/Gps";
 
-import { setNavigationMode } from "../redux/actions/UIState";
+import { setNavigationMode, setShowLevelMenu, setDrivingMode } from "../redux/actions/UIState";
 
 function mapStateToProps(state) {
   return {
@@ -18,6 +18,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     setNavigationMode: bool => dispatch(setNavigationMode(bool)),
+    setShowLevelMenu: bool => dispatch(setShowLevelMenu(bool)),
+    setDrivingMode: bool => dispatch(setDrivingMode(bool))
   };
 }
 class BottomNavBar extends Component<Props> {
@@ -25,7 +27,11 @@ class BottomNavBar extends Component<Props> {
     return (
       <View style={styles.Container}>
         <TouchableOpacity style={{ ...styles.Cell, flexBasis: "25%" }}
-          onPress={() => this.props.setNavigationMode(false)}
+          onPress={() => {
+            this.props.setNavigationMode(false);
+            this.props.setShowLevelMenu(false);
+            this.props.setDrivingMode(false);
+          }}
         >
           <Gps
             fill={

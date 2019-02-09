@@ -7,6 +7,7 @@ import {
     View,
     Text,
     TouchableOpacity,
+    Dimensions
 } from "react-native";
 import { mapStyle } from "../style/mapStyle";
 import { connect } from "react-redux";
@@ -16,7 +17,8 @@ import { setRemaining, setDestination } from "../redux/actions/nav";
 import {
     setStationModalVisible,
     setSelectedStation,
-    setDrivingMode
+    setDrivingMode,
+    setShowLevelMenu
 } from "../redux/actions/UIState";
 import { setAppDataBackend, setLevel, setLight, setLock } from '../redux/actions/appData'
 import colors from "../style/colors";
@@ -41,6 +43,7 @@ function mapDispatchToProps(dispatch) {
         setSelectedStation: id => dispatch(setSelectedStation(id)),
         setModalVisible: value => dispatch(setStationModalVisible(value)),
         setDrivingMode: bool => dispatch(setDrivingMode(bool)),
+        setShowLevelMenu: bool => dispatch(setShowLevelMenu(bool)),
         setDestination: destination => dispatch(setDestination(destination)),
         setRemaining: (time, distance) => dispatch(setRemaining(time, distance)),
         setAppDataBackend: (level, battery, speed, lock, light) => dispatch(setAppDataBackend(level, battery, speed, lock, light)),
@@ -92,7 +95,7 @@ class Main extends Component<Props> {
                                 alignItems: "center",
                                 backgroundColor: colors.black,
                                 flexDirection: "row",
-                                height: "8%",
+                                height: 40,
                                 width: "100%",
                                 justifyContent: "flex-start",
                                 paddingLeft: 30,
@@ -107,19 +110,81 @@ class Main extends Component<Props> {
                                 alignItems: "center",
                                 backgroundColor: colors.black,
                                 flexDirection: "row",
-                                height: "8%",
+                                height: 40,
                                 width: "100%",
                                 justifyContent: "space-around",
                             }}>
-                            <View style={{ height: '100%', justifyContent: 'center', flex: 1, alignContent: 'center', borderRightWidth: 3, borderColor: 'black' }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.setLight(!this.props.appData.light);
+                                    this.socket.emit('message', { light: !this.props.appData.light })
+                                }}
+                                style={{ height: '100%', justifyContent: 'center', flex: 1, alignContent: 'center', borderRightWidth: 3, borderColor: 'black' }}>
                                 <LightIcon style={{ alignSelf: 'center' }} fill={this.props.appData.light ? 'yellow' : 'lightgray'} />
-                            </View>
-                            <View style={{ height: '100%', justifyContent: 'center', flex: 2, alignContent: 'center' }}>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.setShowLevelMenu(!this.props.UIState.showLevelMenu);
+                                }}
+                                style={{ height: '100%', justifyContent: 'center', flex: 2, alignContent: 'center' }}>
                                 <PowerIcon style={{ alignSelf: 'center' }} fill={this.props.appData.level === 'off' ? 'lightgray' : this.props.appData.level === 'eco' ? 'green' : this.props.appData.level === 'normal' ? 'yellow' : 'red'} />
-                            </View>
-                            <View style={{ height: '100%', justifyContent: 'center', flex: 1, alignContent: 'center', borderLeftWidth: 3, borderColor: 'black' }}>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.setLock(!this.props.appData.lock);
+                                    this.socket.emit('message', { lock: !this.props.appData.lock })
+                                }}
+                                style={{ height: '100%', justifyContent: 'center', flex: 1, alignContent: 'center', borderLeftWidth: 3, borderColor: 'black' }}>
                                 <LockIcon style={{ alignSelf: 'center' }} fill={this.props.appData.lock ? 'lightgray' : 'green'} />
-                            </View>
+                            </TouchableOpacity>
+                        </View>
+                    }
+                    {this.props.UIState.showLevelMenu &&
+                        <View style={{ position: 'absolute', zIndex: 5, top: 20, width: '100%', backgroundColor: colors.black }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.setLevel('off');
+                                    this.props.setShowLevelMenu(false);
+                                    this.socket.emit('message', { level: 'off' });
+                                }}>
+                                <View style={{ alignItems: 'center', paddingLeft: 20, paddingRight: 20, borderTopWidth: 1, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-between', height: 70 }}>
+                                    <Text style={{ color: 'lightgray', fontSize: 23, textAlign: 'center' }}>OFF</Text>
+                                    <View style={{ backgroundColor: 'lightgray', height: 15, width: 15, borderRadius: 10 }}></View>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.setLevel('eco');
+                                    this.props.setShowLevelMenu(false);
+                                    this.socket.emit('message', { level: 'eco' });
+                                }}>
+                                <View style={{ alignItems: 'center', paddingLeft: 20, paddingRight: 20, borderTopWidth: 1, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-between', height: 70 }}>
+                                    <Text style={{ color: 'lightgray', fontSize: 23, textAlign: 'center' }}>ECO</Text>
+                                    <View style={{ backgroundColor: 'green', height: 15, width: 15, borderRadius: 10 }}></View>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.setLevel('normal');
+                                    this.props.setShowLevelMenu(false);
+                                    this.socket.emit('message', { level: 'normal' });
+                                }}>
+                                <View style={{ alignItems: 'center', paddingLeft: 20, paddingRight: 20, borderTopWidth: 1, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-between', height: 70 }}>
+                                    <Text style={{ color: 'lightgray', fontSize: 23, textAlign: 'center' }}>NORMAL</Text>
+                                    <View style={{ backgroundColor: 'yellow', height: 15, width: 15, borderRadius: 10 }}></View>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.setLevel('high');
+                                    this.props.setShowLevelMenu(false);
+                                    this.socket.emit('message', { level: 'high' });
+                                }}>
+                                <View style={{ alignItems: 'center', paddingLeft: 20, paddingRight: 20, borderTopWidth: 1, borderColor: 'lightgray', flexDirection: 'row', justifyContent: 'space-between', height: 70 }}>
+                                    <Text style={{ color: 'lightgray', fontSize: 23, textAlign: 'center' }}>HIGH</Text>
+                                    <View style={{ backgroundColor: 'red', height: 15, width: 15, borderRadius: 10 }}></View>
+                                </View>
+                            </TouchableOpacity>
                         </View>
                     }
                     {this.props.appData && this.props.appData.stations && (
@@ -127,7 +192,7 @@ class Main extends Component<Props> {
                             ref={c => (this.mapView = c)}
                             customMapStyle={mapStyle}
                             provider={PROVIDER_GOOGLE}
-                            style={{ height: "92%", width: "100%" }}
+                            style={{ height: Dimensions.get('window').height - 140, width: "100%" }}
                             initialRegion={{
                                 latitude: 59.9229977,
                                 longitude: 10.7535,
