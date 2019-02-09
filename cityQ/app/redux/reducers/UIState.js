@@ -2,6 +2,7 @@ import {
   SET_STATION_MODAL_VISIBLE,
   SET_SELECTED_STATION,
   SET_NAVIGATION_MODE,
+  SET_DRIVING_MODE,
 } from "../actions/UIState";
 
 const initialState = {
@@ -9,6 +10,7 @@ const initialState = {
   selectedStationId: null,
   navigationMode: false,
   userProfileMode: false,
+  drivingMode: false
 };
 
 export default (UIReducer = (state = initialState, action) => {
@@ -29,6 +31,12 @@ export default (UIReducer = (state = initialState, action) => {
       return {
         ...state,
         navigationMode: action.navigationMode,
+      };
+    }
+    case SET_DRIVING_MODE: {
+      return {
+        ...state,
+        drivingMode: action.drivingMode,
       };
     }
     default: {
