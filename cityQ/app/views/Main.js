@@ -237,7 +237,7 @@ class Main extends Component<Props> {
                 }}>
                 <LockIcon
                   style={{ alignSelf: "center" }}
-                  fill={this.props.appData.lock ? "lightblue" : "lightgray"}
+                  fill={this.props.appData.lock ? "blue" : "lightgray"}
                 />
               </TouchableOpacity>
             </View>
